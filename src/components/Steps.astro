@@ -1,0 +1,89 @@
+---
+interface Props {
+  steps: { title: string; text: string }[];
+  tone?: 'paper' | 'night';
+}
+const { steps } = Astro.props;
+---
+
+<ol class="steps" role="list">
+  {
+    steps.map((s, i) => (
+      <li class="steps__item" data-reveal>
+        <span class="steps__num mono">{String(i + 1).padStart(2, '0')}</span>
+        <h3 class="steps__title">{s.title}</h3>
+        <p class="steps__text">{s.text}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0;
+    counter-reset: step;
+  }
+  .steps__item {
+    position: relative;
+    display: grid;
+    align-content: start;
+    grid-template-columns: 3.25rem 1fr;
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-top: 1px solid currentColor;
+    border-top-color: var(--line);
+  }
+  :global(.on-night) .steps__item {
+    border-top-color: var(--night-line);
+  }
+  .steps__num {
+    grid-row: span 2;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--accent);
+    padding-top: 0.25rem;
+  }
+  :global(.on-night) .steps__num {
+    color: var(--accent-on-night);
+  }
+  .steps__title {
+    font-size: var(--step-1);
+    font-weight: 700;
+    font-stretch: 108%;
+    line-height: 1.2;
+  }
+  .steps__text {
+    color: var(--ink-2);
+  }
+  :global(.on-night) .steps__text {
+    color: var(--on-night-muted);
+  }
+  @media (min-width: 56rem) {
+    .steps {
+      grid-template-columns: repeat(var(--cols, 4), 1fr);
+      gap: var(--space-6);
+    }
+    .steps__item {
+      grid-template-columns: 1fr;
+      border-top-width: 2px;
+      padding-top: var(--space-5);
+    }
+    .steps__item::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+    }
+    :global(.on-night) .steps__item::before {
+      background: var(--accent-on-night);
+    }
+    .steps__num {
+      grid-row: auto;
+    }
+  }
+</style>

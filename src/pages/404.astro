@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+---
+
+<Base title="Page Not Found | Meridian Construction Companies" description="The page you were looking for could not be found." noindex>
+  <section class="section">
+    <div class="container-narrow stack">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="h1">That page is off the plan.</h1>
+      <p class="lede">
+        The page you were looking for has moved or no longer exists. Try one of these, or call us at
+        <a href={site.phone.href} class="inline">{site.phone.display}</a>.
+      </p>
+      <ul class="ticks">
+        {services.map((s) => <li><a href={`/services/${s.slug}/`} class="inline">{s.name}</a></li>)}
+        <li><a href="/projects/" class="inline">Our work</a></li>
+        <li><a href="/about/" class="inline">About Meridian</a></li>
+      </ul>
+      <div class="btn-row">
+        <a href="/contact/" class="btn btn--accent">Request an Estimate <Icon name="arrow" /></a>
+        <a href="/" class="btn btn--ghost">Go to the home page</a>
+      </div>
+    </div>
+  </section>
+</Base>

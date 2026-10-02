@@ -1,0 +1,44 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  id?: string;
+}
+const { eyebrow, title, lede, id = 'page-title' } = Astro.props;
+---
+
+<header class="page-hero">
+  <div class="container page-hero__inner">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="h1" id={id}>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-hero {
+    padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) clamp(2.5rem, 1rem + 4vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .page-hero__inner {
+    display: grid;
+    gap: var(--space-5);
+    position: relative;
+  }
+  .page-hero h1 {
+    max-width: 22ch;
+  }
+  .page-hero::after {
+    /* The meridian: a vermillion rule that anchors every page header. */
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: max(var(--gutter), calc((100% - var(--container)) / 2));
+    width: 6rem;
+    height: 3px;
+    background: var(--accent);
+  }
+</style>

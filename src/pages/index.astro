@@ -1,0 +1,611 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PlanDrawing from '../components/PlanDrawing.astro';
+import DeliveryTable from '../components/DeliveryTable.astro';
+import Steps from '../components/Steps.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { site, nearbyCommunities } from '../data/site';
+import { services } from '../data/services';
+import { projects } from '../data/projects';
+import { faqSchema } from '../data/schema';
+
+const title = 'Commercial General Contractor in Wixom, MI | Meridian';
+const description =
+  'Tenant improvements, commercial carpentry, design/build and construction management in southeast Michigan — built to the drawings, on time and on budget.';
+
+const commitments = [
+  {
+    title: 'On time and on budget',
+    text: 'The schedule and price we agree to are the ones we build to. When something on site threatens either, you hear about it while there is still time to decide.',
+  },
+  {
+    title: 'Built to the drawings',
+    text: 'High quality and sharp accuracy: walls where the plans put them, ceilings at the heights specified, openings that match the door schedule.',
+  },
+  {
+    title: 'Value engineered, not cut',
+    text: 'We look for the materials and methods that give you the best quality for the money — early, while changes are still cheap.',
+  },
+  {
+    title: 'Our own carpenters',
+    text: 'Framing, drywall, ceilings, doors and partitions — the scopes that set the pace of most interiors — are performed by Meridian carpenters.',
+  },
+];
+
+const process = [
+  {
+    title: 'Talk through the project',
+    text: 'Tell us about the space, your drawings (if you have them), your budget and the date you need it.',
+  },
+  {
+    title: 'Walk the site & review scope',
+    text: 'We look at existing conditions and the documents, and recommend the right delivery method.',
+  },
+  {
+    title: 'Price, value & schedule',
+    text: 'A clear estimate with assumptions spelled out, value-engineering options and a realistic schedule.',
+  },
+  {
+    title: 'Build & hand over',
+    text: 'We build to the plans, coordinate every trade, walk the punch list with you and turn over the space.',
+  },
+];
+
+const homeFaqs = [
+  {
+    q: 'What kinds of commercial projects does Meridian build?',
+    a: 'Interior build-outs and tenant improvements for retail space, office space, medical facilities, food establishments and recreational facilities, along with other commercial interiors.',
+  },
+  {
+    q: 'Should I hire a general contractor, a design/build firm or a construction manager?',
+    a: 'It depends on where your project is. With finished drawings, general contracting gives you a firm price and schedule. Without drawings, design/build lets one team design to your budget. If you want to hold some contracts yourself, construction management keeps them coordinated. We offer all three and will recommend one.',
+  },
+  {
+    q: 'Where is Meridian Construction located?',
+    a: `Our office is at ${site.address.street} in ${site.address.city}, ${site.address.regionName}, in ${site.address.county}. Call ${site.phone.display} to confirm whether your project location is one we can take on.`,
+  },
+  {
+    q: 'How do I get an estimate?',
+    a: 'Use the estimate request form — you can attach drawings — or call us. We review what you send and follow up to discuss scope, schedule and next steps.',
+  },
+];
+---
+
+<Base title={title} description={description} schema={[faqSchema(homeFaqs)]}>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Commercial contractor · Wixom, Michigan</p>
+        <h1 class="display" id="hero-title">
+          Commercial interiors built <em>to the drawings</em> — on time and on budget.
+        </h1>
+        <p class="lede">
+          {site.name} delivers tenant improvements and interior build-outs for retail, office, medical, food service
+          and recreational spaces — through general contracting, commercial carpentry, design/build or construction
+          management.
+        </p>
+        <div class="btn-row">
+          <a href="/contact/" class="btn btn--accent" data-track="cta_click" data-track-location="hero">
+            Request an Estimate <Icon name="arrow" />
+          </a>
+          <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location="hero">
+            <Icon name="phone" /> {site.phone.display}
+          </a>
+        </div>
+      </div>
+      <div class="hero__drawing">
+        <PlanDrawing />
+      </div>
+    </div>
+
+    <dl class="container spec">
+      <div class="spec__cell">
+        <dt>Delivery</dt>
+        <dd>General contracting · Design/build · Construction management</dd>
+      </div>
+      <div class="spec__cell">
+        <dt>Self-performed</dt>
+        <dd>Framing · Drywall · Ceilings · Doors · Partitions</dd>
+      </div>
+      <div class="spec__cell">
+        <dt>Sectors</dt>
+        <dd>{site.sectors.join(' · ')}</dd>
+      </div>
+      <div class="spec__cell">
+        <dt>Office</dt>
+        <dd>{site.address.city}, {site.address.region} · {site.address.county}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- SERVICES INDEX -->
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div class="stack" style="--flow: var(--space-4)">
+          <p class="eyebrow">What we do</p>
+          <h2 class="h2" id="services-title">Four ways to build your space — one accountable contractor.</h2>
+        </div>
+        <p class="lede">
+          Whether you arrive with a finished set of drawings or just a lease and an idea, there is a Meridian service
+          built for where your project is today.
+        </p>
+      </div>
+
+      <ol class="svc-index" role="list">
+        {
+          services.map((s) => (
+            <li data-reveal>
+              <a href={`/services/${s.slug}/`} class="svc-index__row">
+                <span class="svc-index__num mono">{s.number}</span>
+                <span class="svc-index__name">{s.name}</span>
+                <span class="svc-index__summary">{s.summary}</span>
+                <span class="svc-index__go" aria-hidden="true">
+                  <Icon name="arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- VALUE PROPOSITION -->
+  <section class="section on-night value" aria-labelledby="value-title">
+    <div class="container value__grid">
+      <div class="value__head">
+        <p class="eyebrow">Why Meridian</p>
+        <h2 class="h2" id="value-title">Precision is the whole job.</h2>
+        <p class="lede">
+          A commercial interior is a promise to someone — a tenant’s opening day, a landlord’s lease start, a
+          practice’s first patient. We take on that promise with a clear price, a schedule we hold to and work
+          that matches the plans.
+        </p>
+      </div>
+      <ul class="value__list" role="list">
+        {
+          commitments.map((c, i) => (
+            <li class="value__item" data-reveal>
+              <span class="mono value__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h4">{c.title}</h3>
+              <p>{c.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- DELIVERY COMPARISON -->
+  <section class="section" aria-labelledby="fit-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Choosing a service</p>
+        <h2 class="h2" id="fit-title">Not sure which service you need? Start with where your project is.</h2>
+      </div>
+      <DeliveryTable />
+    </div>
+  </section>
+
+  <!-- PROJECTS (renders once real projects are added) -->
+  {
+    projects.length > 0 && (
+      <section class="section tinted" aria-labelledby="work-title">
+        <div class="container">
+          <div class="section-head section-head--split">
+            <div class="stack" style="--flow: var(--space-4)">
+              <p class="eyebrow">Our work</p>
+              <h2 class="h2" id="work-title">Recent projects</h2>
+            </div>
+            <p>
+              <a href="/projects/" class="link-arrow">
+                View all projects <Icon name="arrow" />
+              </a>
+            </p>
+          </div>
+          <div class="work-grid">
+            {projects.slice(0, 3).map((p) => <ProjectCard project={p} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- SECTORS -->
+  <section class="section tinted" aria-labelledby="sectors-title">
+    <div class="container sectors">
+      <div class="stack" style="--flow: var(--space-4)">
+        <p class="eyebrow">Spaces we build</p>
+        <h2 class="h2" id="sectors-title">Retail, office, medical, food service and recreational interiors.</h2>
+        <p class="lede">
+          Each type of space has its own pressure points — opening dates, patient flow, health inspections, tenants
+          still working next door. We plan the build around them.
+        </p>
+        <p>
+          <a href="/projects/" class="link-arrow">See the spaces we build <Icon name="arrow" /></a>
+        </p>
+      </div>
+      <ul class="sectors__list" role="list">
+        {
+          site.sectors.map((s, i) => (
+            <li>
+              <span class="mono">{String.fromCharCode(65 + i)}</span>
+              {s}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2 class="h2" id="process-title">From first call to finished space.</h2>
+      </div>
+      <Steps steps={process} />
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section class="section tinted location" aria-labelledby="location-title">
+    <div class="container location__grid">
+      <div class="stack" style="--flow: var(--space-4)">
+        <p class="eyebrow">Where we are</p>
+        <h2 class="h2" id="location-title">Based in Wixom, building across southeast Michigan.</h2>
+        <p class="lede">
+          Our office on West Road in Wixom puts us in the middle of western Oakland County, minutes from I-96 and
+          M-5. Call to confirm we can take on a project at your site.
+        </p>
+      </div>
+      <div class="location__card">
+        <address>
+          <span class="mono location__label">Office</span>
+          <strong>{site.name}</strong>
+          {site.address.street}<br />
+          {site.address.city}, {`${site.address.region} ${site.address.postalCode}`}
+        </address>
+        <div class="location__links">
+          <a href={site.phone.href} class="link-arrow" data-track="click_to_call" data-track-location="home_location">
+            <Icon name="phone" />
+            {site.phone.display}
+          </a>
+          <a href={site.directionsUrl} class="link-arrow" target="_blank" rel="noopener">
+            Get directions <Icon name="external" /><span class="visually-hidden"> (opens Google Maps in a new tab)</span>
+          </a>
+        </div>
+        <div>
+          <span class="mono location__label">Nearby communities</span>
+          <p class="location__near">{nearbyCommunities.join(' · ')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FaqList faqs={homeFaqs} heading="Questions owners and tenants ask first" />
+
+  <CtaBand location="home" />
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    padding-top: clamp(2.5rem, 1rem + 5vw, 5.5rem);
+    background-image:
+      linear-gradient(var(--paper-3) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-3) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+  }
+  .hero::before {
+    /* Fade the drafting grid out toward the copy so text stays crisp. */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, var(--paper) 35%, rgb(243 240 232 / 0.72) 70%, rgb(243 240 232 / 0.5));
+    pointer-events: none;
+  }
+  .hero__grid {
+    position: relative;
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .hero__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero__drawing {
+    max-width: 34rem;
+    width: 100%;
+    justify-self: center;
+  }
+  .spec {
+    position: relative;
+    display: grid;
+    margin-top: clamp(2.5rem, 1rem + 5vw, 5rem);
+    border-top: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .spec__cell {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: var(--space-1);
+  }
+  .spec dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .spec dd {
+    margin: 0;
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  @media (min-width: 40rem) {
+    .spec {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .spec__cell {
+      padding-right: var(--space-5);
+    }
+  }
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--space-8);
+    }
+    .spec {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .spec__cell {
+      border-bottom: 0;
+      padding: var(--space-5) var(--space-5) var(--space-5) 0;
+    }
+    .spec__cell + .spec__cell {
+      border-left: 1px solid var(--line);
+      padding-left: var(--space-5);
+    }
+  }
+
+  /* Service index */
+  .svc-index {
+    border-top: 2px solid var(--ink);
+  }
+  .svc-index__row {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr auto;
+    gap: var(--space-2) var(--space-4);
+    align-items: baseline;
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    position: relative;
+    transition: background-color var(--dur) var(--ease);
+  }
+  .svc-index__row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 2px;
+    width: 0;
+    background: var(--accent);
+    transition: width 320ms var(--ease);
+  }
+  .svc-index__row:hover::before,
+  .svc-index__row:focus-visible::before {
+    width: 100%;
+  }
+  .svc-index__num {
+    color: var(--accent);
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+  .svc-index__name {
+    font-size: var(--step-3);
+    font-weight: 780;
+    font-stretch: 114%;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    transition: color var(--dur) var(--ease);
+  }
+  .svc-index__row:hover .svc-index__name {
+    color: var(--accent);
+  }
+  .svc-index__summary {
+    grid-column: 2 / -1;
+    color: var(--ink-2);
+    max-width: 36rem;
+  }
+  .svc-index__go {
+    grid-row: 1;
+    grid-column: 3;
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    align-self: center;
+    transition:
+      background-color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  .svc-index__go :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .svc-index__row:hover .svc-index__go {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  @media (min-width: 60rem) {
+    .svc-index__row {
+      grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 1.1fr) auto;
+      align-items: center;
+    }
+    .svc-index__summary {
+      grid-column: 3;
+    }
+    .svc-index__go {
+      grid-column: 4;
+    }
+  }
+
+  /* Value */
+  .value__grid {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .value__head {
+    display: grid;
+    gap: var(--space-5);
+    align-content: start;
+  }
+  .value__list {
+    display: grid;
+    gap: var(--space-6) var(--space-7);
+  }
+  .value__item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--night-line);
+  }
+  .value__item p {
+    color: var(--on-night-muted);
+  }
+  .value__num {
+    color: var(--accent-on-night);
+    font-size: var(--step--1);
+  }
+  @media (min-width: 48rem) {
+    .value__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 72rem) {
+    .value__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+    .value__head {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+
+  /* Work */
+  .work-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 48rem) {
+    .work-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Sectors */
+  .sectors {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .sectors__list {
+    border-top: 2px solid var(--ink);
+  }
+  .sectors__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-5);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--line-strong);
+    font-size: var(--step-3);
+    font-weight: 780;
+    font-stretch: 116%;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .sectors__list .mono {
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  @media (min-width: 64rem) {
+    .sectors {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-9);
+    }
+  }
+
+  /* Location */
+  .location__grid {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .location__card {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent);
+  }
+  .location__card address {
+    font-style: normal;
+    display: grid;
+    gap: var(--space-1);
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .location__label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--space-2);
+  }
+  .location__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+  }
+  .location__links .link-arrow {
+    min-height: 2.75rem;
+    border-bottom: 0;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .location__near {
+    color: var(--ink-2);
+  }
+  @media (min-width: 64rem) {
+    .location__grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-9);
+      align-items: center;
+    }
+  }
+</style>

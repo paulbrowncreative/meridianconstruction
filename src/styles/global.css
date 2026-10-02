@@ -1,0 +1,493 @@
+/* ==========================================================================
+   Meridian Construction — design system
+   Drafting-table palette (paper, graphite, survey vermillion), a single
+   variable grotesque (Archivo, width axis for display) and a mono for
+   spec-sheet labels. Every colour pair used for text meets WCAG 2.2 AA.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/plex-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/plex-mono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+/* Metric-matched fallback keeps layout shift near zero while fonts load. */
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial');
+  size-adjust: 104%;
+  ascent-override: 88%;
+  descent-override: 21%;
+}
+
+:root {
+  /* Colour */
+  --paper: #f3f0e8;
+  --paper-2: #e9e4d8;
+  --paper-3: #ddd6c6;
+  --ink: #15171a;
+  --ink-2: #4a4f57;
+  --muted: #5b6068;
+  --line: #cfc8b8;
+  --line-strong: #a79f8c;
+  --accent: #b83a12; /* survey vermillion — 5.05:1 on paper */
+  --accent-hover: #9c300e;
+  --accent-soft: #f6dfd3;
+  --night: #15171a;
+  --night-2: #1e2125;
+  --night-line: #33373d;
+  --on-night: #f3f0e8;
+  --on-night-muted: #a9adb3;
+  --accent-on-night: #f26a3d; /* 5.9:1 on night */
+  --success: #2f6b3a;
+  --error: #a3240f;
+
+  /* Type */
+  --font-sans: 'Archivo', 'Archivo Fallback', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.11rem + 0.45vw, 1.45rem);
+  --step-2: clamp(1.44rem, 1.27rem + 0.85vw, 1.95rem);
+  --step-3: clamp(1.73rem, 1.43rem + 1.5vw, 2.6rem);
+  --step-4: clamp(2.07rem, 1.57rem + 2.5vw, 3.5rem);
+  --step-5: clamp(2.49rem, 1.68rem + 4vw, 4.75rem);
+
+  /* Space (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: clamp(4rem, 3rem + 5vw, 7.5rem);
+  --section: clamp(4rem, 2.5rem + 6vw, 8rem);
+
+  /* Layout */
+  --container: 76rem;
+  --container-narrow: 46rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --header-h: 4.5rem;
+
+  /* Shape & motion */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --shadow-1: 0 1px 0 rgb(21 23 26 / 0.06), 0 8px 24px -12px rgb(21 23 26 / 0.18);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-feature-settings: 'ss01';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+figure,
+blockquote {
+  margin: 0;
+}
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+a {
+  color: inherit;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+.on-night :focus-visible {
+  outline-color: var(--accent-on-night);
+}
+
+/* ---------- Typography ---------- */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 760;
+  font-stretch: 112%;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.display {
+  font-size: var(--step-5);
+  font-weight: 800;
+  font-stretch: 118%;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+.h1 {
+  font-size: var(--step-4);
+}
+.h2 {
+  font-size: var(--step-3);
+}
+.h3 {
+  font-size: var(--step-2);
+}
+.h4 {
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+p {
+  text-wrap: pretty;
+}
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 40em;
+}
+.on-night .lede {
+  color: var(--on-night-muted);
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.eyebrow::before {
+  content: '';
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+}
+.on-night .eyebrow {
+  color: var(--accent-on-night);
+}
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+.muted {
+  color: var(--muted);
+}
+.on-night .muted {
+  color: var(--on-night-muted);
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+.container-narrow {
+  width: min(100% - 2 * var(--gutter), var(--container-narrow));
+  margin-inline: auto;
+}
+.section {
+  padding-block: var(--section);
+}
+.section-tight {
+  padding-block: var(--space-9);
+}
+.on-night {
+  background: var(--night);
+  color: var(--on-night);
+}
+.tinted {
+  background: var(--paper-2);
+}
+.stack > * + * {
+  margin-top: var(--flow, var(--space-5));
+}
+.rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+.section-head {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  max-width: 48rem;
+}
+.section-head--split {
+  max-width: none;
+}
+@media (min-width: 60rem) {
+  .section-head--split {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: var(--space-8);
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-border: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 3rem;
+  padding: 0.8rem 1.4rem;
+  border: 1.5px solid var(--btn-border);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 650;
+  font-size: var(--step-0);
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.btn:hover {
+  --btn-bg: #000;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+.btn:hover svg.arrow {
+  transform: translateX(3px);
+}
+.btn--accent {
+  --btn-bg: var(--accent);
+  --btn-border: var(--accent);
+  --btn-fg: #fff;
+}
+.btn--accent:hover {
+  --btn-bg: var(--accent-hover);
+  --btn-border: var(--accent-hover);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-border: var(--line-strong);
+}
+.btn--ghost:hover {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-border: var(--ink);
+}
+.on-night .btn--ghost {
+  --btn-fg: var(--on-night);
+  --btn-border: var(--night-line);
+}
+.on-night .btn--ghost:hover {
+  --btn-bg: var(--on-night);
+  --btn-fg: var(--ink);
+  --btn-border: var(--on-night);
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (max-width: 30rem) {
+  .btn-row .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Text link with an arrow, used for "View service" style links */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 1.5px solid currentColor;
+  padding-bottom: 2px;
+}
+.link-arrow svg {
+  width: 1em;
+  height: 1em;
+  transition: transform var(--dur) var(--ease);
+}
+.link-arrow:hover svg {
+  transform: translateX(3px);
+}
+
+/* Inline prose links */
+.prose a,
+a.inline {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.prose a:hover,
+a.inline:hover {
+  text-decoration-thickness: 2px;
+}
+.prose > * + * {
+  margin-top: 1.1em;
+}
+.prose {
+  max-width: 40em;
+}
+
+/* Tick list — square vermillion markers, like plan callouts */
+.ticks {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+.ticks li {
+  position: relative;
+  padding-left: 1.6rem;
+}
+.ticks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--accent);
+}
+.on-night .ticks li::before {
+  background: var(--accent-on-night);
+}
+
+/* ---------- Utilities ---------- */
+[hidden] {
+  display: none !important;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -4rem;
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 650;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Restrained reveal: content is visible by default; JS opts in. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 600ms var(--ease),
+      transform 600ms var(--ease);
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Inline icons default to the surrounding text size. */
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}

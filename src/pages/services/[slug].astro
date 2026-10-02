@@ -1,0 +1,345 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Steps from '../../components/Steps.astro';
+import FaqList from '../../components/FaqList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services, getService, type Service } from '../../data/services';
+import { site } from '../../data/site';
+import { serviceSchema, faqSchema } from '../../data/schema';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+  service: Service;
+}
+const { service: s } = Astro.props;
+const related = s.related.map(getService);
+
+// MasterFormat references for the carpentry scope — useful shorthand for the
+// architects, owners' reps and GCs who write and read specs.
+const carpentrySpec = [
+  ['06 10 00', 'Rough carpentry, wood framing and blocking'],
+  ['09 22 16', 'Non-structural metal framing'],
+  ['09 29 00', 'Gypsum board'],
+  ['09 51 00', 'Acoustical ceilings'],
+  ['08 11 13', 'Hollow metal doors and frames'],
+  ['08 14 00', 'Wood doors'],
+  ['08 71 00', 'Door hardware'],
+  ['10 21 13', 'Toilet compartments'],
+  ['10 28 00', 'Toilet, bath and laundry accessories'],
+];
+---
+
+<Base
+  title={s.seoTitle}
+  description={s.metaDescription}
+  crumbs={[
+    { name: 'Services', href: '/services/' },
+    { name: s.name, href: `/services/${s.slug}/` },
+  ]}
+  schema={[serviceSchema(s), faqSchema(s.faqs)]}
+>
+  <header class="svc-hero">
+    <div class="container svc-hero__grid">
+      <div class="svc-hero__copy">
+        <p class="eyebrow">Service {s.number} — {s.name}</p>
+        <h1 class="h1">{s.h1}</h1>
+        <p class="lede">{s.lede}</p>
+        <div class="btn-row">
+          <a href={`/contact/?service=${s.slug}`} class="btn btn--accent" data-track="cta_click" data-track-location={`service_hero_${s.slug}`}>
+            Request an Estimate <Icon name="arrow" />
+          </a>
+          <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location={`service_hero_${s.slug}`}>
+            <Icon name="phone" /> {site.phone.display}
+          </a>
+        </div>
+      </div>
+      <aside class="fit" aria-labelledby="fit-title">
+        <h2 class="fit__title mono" id="fit-title">{s.fitHeading}</h2>
+        <ul class="ticks">
+          {s.fit.map((f) => <li>{f}</li>)}
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="overview-title">
+    <div class="container split">
+      <div class="split__label">
+        <p class="eyebrow">Overview</p>
+        <h2 class="h3" id="overview-title">How {s.name.toLowerCase()} works at Meridian</h2>
+      </div>
+      <div class="prose split__body">
+        {s.intro.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section tinted" aria-labelledby="includes-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Scope</p>
+        <h2 class="h2" id="includes-title">{s.includesHeading}</h2>
+      </div>
+      <ul class="includes" role="list">
+        {
+          s.includes.map((item, i) => (
+            <li class="includes__item" data-reveal>
+              <span class="mono includes__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h4">{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      {
+        s.slug === 'commercial-carpentry' && (
+          <div class="spec-ref">
+            <h3 class="h4">Spec section reference</h3>
+            <p class="muted">
+              Typical CSI MasterFormat sections our carpentry scope corresponds to. Your project’s specifications
+              govern.
+            </p>
+            <table>
+              <caption class="visually-hidden">CSI MasterFormat sections for commercial carpentry scope</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Section</th>
+                  <th scope="col">Title</th>
+                </tr>
+              </thead>
+              <tbody>
+                {carpentrySpec.map(([code, name]) => (
+                  <tr>
+                    <td class="mono">{code}</td>
+                    <td>{name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section on-night" aria-labelledby="steps-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Process</p>
+        <h2 class="h2" id="steps-title">What happens after you call</h2>
+      </div>
+      <Steps steps={s.steps} />
+    </div>
+  </section>
+
+  <FaqList faqs={s.faqs} heading={`${s.name} questions`} />
+
+  <section class="section-tight tinted" aria-labelledby="related-title">
+    <div class="container">
+      <h2 class="h3 related__title" id="related-title">Related services</h2>
+      <ul class="related" role="list">
+        {
+          related.map((r) => (
+            <li>
+              <a href={`/services/${r.slug}/`} class="related__link">
+                <span class="mono">{r.number}</span>
+                <span class="related__name">{r.name}</span>
+                <span class="related__summary">{r.summary}</span>
+                <Icon name="arrow" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    location={`service_${s.slug}`}
+    service={s.slug}
+    heading={s.slug === 'design-build' ? 'Start with a site walk.' : 'Send us your drawings.'}
+    text={
+      s.slug === 'design-build'
+        ? 'Tell us about the space, your budget and your dates. We will set up a time to walk the site and talk through design/build.'
+        : `Upload plans or describe the scope, and we will follow up about ${s.name.toLowerCase()} for your project.`
+    }
+  />
+</Base>
+
+<style>
+  .svc-hero {
+    padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--space-6);
+  }
+  .svc-hero__grid {
+    display: grid;
+    gap: var(--space-7);
+    align-items: end;
+  }
+  .svc-hero__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .fit {
+    padding: var(--space-6);
+    background: var(--paper-2);
+    border-top: 3px solid var(--accent);
+    display: grid;
+    gap: var(--space-4);
+  }
+  .fit__title {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-stretch: 100%;
+    line-height: 1.4;
+  }
+  @media (min-width: 64rem) {
+    .svc-hero__grid {
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  .split {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .split__label {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .split__body {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  @media (min-width: 64rem) {
+    .split {
+      grid-template-columns: 1fr 1.6fr;
+      gap: var(--space-8);
+    }
+  }
+
+  .includes {
+    display: grid;
+    border-top: 2px solid var(--ink);
+  }
+  .includes__item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .includes__item p {
+    color: var(--ink-2);
+  }
+  .includes__num {
+    color: var(--accent);
+    font-size: var(--step--1);
+  }
+  @media (min-width: 48rem) {
+    .includes {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--space-7);
+    }
+  }
+  @media (min-width: 72rem) {
+    .includes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .includes__item {
+      padding: var(--space-6) 0;
+    }
+  }
+
+  .spec-ref {
+    margin-top: var(--space-8);
+    display: grid;
+    gap: var(--space-3);
+    max-width: 44rem;
+  }
+  .spec-ref table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--space-3);
+  }
+  .spec-ref th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--ink);
+  }
+  .spec-ref td {
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    border-bottom: 1px solid var(--line-strong);
+    vertical-align: top;
+  }
+  .spec-ref td.mono {
+    white-space: nowrap;
+    color: var(--accent);
+    width: 7rem;
+  }
+
+  .related__title {
+    margin-bottom: var(--space-5);
+  }
+  .related {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .related__link {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-1) var(--space-4);
+    align-items: baseline;
+    padding: var(--space-5);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    text-decoration: none;
+    height: 100%;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .related__link:hover {
+    border-color: var(--ink);
+  }
+  .related__link .mono {
+    color: var(--accent);
+    font-size: var(--step--1);
+  }
+  .related__name {
+    font-weight: 700;
+    font-stretch: 108%;
+    font-size: var(--step-1);
+  }
+  .related__summary {
+    grid-column: 2;
+    color: var(--ink-2);
+    font-size: var(--step--1);
+  }
+  .related__link :global(svg) {
+    grid-column: 3;
+    grid-row: 1;
+    width: 1.1rem;
+    height: 1.1rem;
+    align-self: center;
+    color: var(--accent);
+  }
+  @media (min-width: 64rem) {
+    .related {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

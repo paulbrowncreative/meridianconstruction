@@ -1,0 +1,204 @@
+---
+/**
+ * Illustrative tenant build-out floor plan (1 unit = 1 in. at 10 px/ft).
+ * Decorative: it signals what Meridian builds without presenting a real
+ * project, so it is hidden from assistive tech and captioned as illustrative.
+ */
+interface Props {
+  caption?: boolean;
+}
+const { caption = true } = Astro.props;
+---
+
+<figure class="plan">
+  <svg viewBox="0 0 560 470" class="plan__svg" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="ceiling-grid" width="20" height="40" patternUnits="userSpaceOnUse" x="200" y="40">
+        <path d="M20 0V40M0 40H20" fill="none" stroke="currentColor" stroke-width="0.6"></path>
+      </pattern>
+    </defs>
+
+    <!-- Acoustical ceiling grid (2'x4') in the open office -->
+    <rect x="203" y="43" width="314" height="254" fill="url(#ceiling-grid)" class="plan__grid"></rect>
+
+    <!-- Exterior shell, with the entry opening at the bottom -->
+    <path class="plan__wall plan__draw" pathLength="1" d="M250 420H40V40H520V420H310"></path>
+
+    <!-- Interior partitions -->
+    <g class="plan__partition">
+      <path class="plan__draw" pathLength="1" d="M200 40V95M200 125V195M200 225V260"></path>
+      <path class="plan__draw" pathLength="1" d="M40 150H200"></path>
+      <path class="plan__draw" pathLength="1" d="M40 260H60M88 260H140M168 260H200V420"></path>
+      <path class="plan__draw" pathLength="1" d="M120 260V420"></path>
+      <path class="plan__draw" pathLength="1" d="M380 300H520M380 300V332M380 362V420"></path>
+    </g>
+
+    <!-- Door leaves and swings -->
+    <g class="plan__door">
+      <path d="M200 125H230M230 125A30 30 0 0 0 200 95"></path>
+      <path d="M200 225H230M230 225A30 30 0 0 0 200 195"></path>
+      <path d="M60 260V288M60 288A28 28 0 0 0 88 260"></path>
+      <path d="M140 260V288M140 288A28 28 0 0 0 168 260"></path>
+      <path d="M380 362H350M350 362A30 30 0 0 1 380 332"></path>
+      <path d="M250 420V360M250 360A60 60 0 0 1 310 420"></path>
+    </g>
+
+    <!-- Centerline: the "meridian" -->
+    <g class="plan__meridian">
+      <path d="M290 6V466" stroke-dasharray="14 5 3 5"></path>
+      <text x="296" y="16">℄</text>
+    </g>
+
+    <!-- Dimension strings -->
+    <g class="plan__dim">
+      <path d="M40 22H520M40 16V28M520 16V28"></path>
+      <path d="M22 40V420M16 40H28M16 420H28"></path>
+      <rect x="118" y="15" width="56" height="14" class="plan__dim-bg"></rect>
+      <text x="146" y="26" text-anchor="middle">48′-0″</text>
+      <rect x="15" y="200" width="14" height="60" class="plan__dim-bg"></rect>
+      <text x="26" y="230" text-anchor="middle" transform="rotate(-90 22 230)">38′-0″</text>
+    </g>
+
+    <!-- Room tags -->
+    <g class="plan__label" text-anchor="middle">
+      <text x="120" y="99">OFFICE 101</text>
+      <text x="120" y="209">OFFICE 102</text>
+      <text x="80" y="345">RR</text>
+      <text x="160" y="345">RR</text>
+      <text x="335" y="175" class="plan__label--lg">OPEN OFFICE</text>
+      <text x="335" y="191">ACT CEILING 2×4</text>
+      <text x="450" y="365">CONF.</text>
+      <text x="280" y="452">ENTRY</text>
+    </g>
+
+    <!-- North arrow -->
+    <g class="plan__north" transform="translate(540 446)">
+      <circle r="11" fill="none"></circle>
+      <path d="M0 -9L4 4L0 1L-4 4Z"></path>
+    </g>
+  </svg>
+  {
+    caption && (
+      <figcaption class="plan__caption mono">
+        <span>Fig. 01</span> Typical tenant build-out — illustrative plan
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .plan {
+    color: var(--ink);
+  }
+  .plan__svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .plan__grid {
+    color: var(--line-strong);
+    opacity: 0.55;
+  }
+  .plan__wall {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 7;
+    stroke-linecap: square;
+  }
+  .plan__partition path {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3.5;
+    stroke-linecap: square;
+  }
+  .plan__door path {
+    fill: none;
+    stroke: var(--ink-2);
+    stroke-width: 1.2;
+  }
+  .plan__meridian path {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .plan__meridian text {
+    fill: var(--accent);
+    font: 500 14px var(--font-mono);
+  }
+  .plan__dim path {
+    stroke: var(--muted);
+    stroke-width: 1;
+    fill: none;
+  }
+  .plan__dim-bg {
+    fill: var(--paper-2);
+  }
+  .plan__dim text,
+  .plan__label text {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    fill: var(--ink-2);
+  }
+  .plan__label .plan__label--lg {
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--ink);
+  }
+  .plan__north circle {
+    stroke: var(--ink-2);
+    stroke-width: 1;
+  }
+  .plan__north path {
+    fill: var(--ink);
+  }
+  .plan__caption {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .plan__caption span {
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .plan__draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw 1.4s var(--ease) forwards;
+    }
+    .plan__partition .plan__draw {
+      animation-delay: 0.35s;
+      animation-duration: 1.1s;
+    }
+    .plan__door,
+    .plan__label,
+    .plan__dim,
+    .plan__grid {
+      opacity: 0;
+      animation: fade 0.8s var(--ease) 1.1s forwards;
+    }
+    .plan__grid {
+      animation-name: fade-grid;
+    }
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    @keyframes fade {
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes fade-grid {
+      to {
+        opacity: 0.55;
+      }
+    }
+  }
+</style>

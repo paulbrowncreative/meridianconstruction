@@ -1,0 +1,111 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site';
+import {
+  organizationSchema,
+  websiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+  type Crumb,
+} from '../data/schema';
+
+interface Props {
+  /** Full <title>. Keep under ~60 characters. */
+  title: string;
+  /** Meta description. Keep around 140–160 characters. */
+  description: string;
+  noindex?: boolean;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /** Breadcrumb trail, excluding Home (added automatically). */
+  crumbs?: Crumb[];
+  /** Extra JSON-LD nodes for this page. */
+  schema?: Record<string, unknown>[];
+  pageType?: string;
+}
+
+const {
+  title,
+  description,
+  noindex = false,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  crumbs = [],
+  schema = [],
+  pageType,
+} = Astro.props;
+
+// Non-production builds (deploy previews, branch deploys) set PUBLIC_NOINDEX.
+const blockIndexing = noindex || import.meta.env.PUBLIC_NOINDEX === 'true';
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const fullCrumbs: Crumb[] = crumbs.length ? [{ name: 'Home', href: '/' }, ...crumbs] : [];
+const isHome = Astro.url.pathname === '/';
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    organizationSchema(),
+    ...(isHome ? [websiteSchema()] : []),
+    webPageSchema({ url: canonical, name: title, description, type: pageType }),
+    ...(fullCrumbs.length ? [breadcrumbSchema(fullCrumbs)] : []),
+    ...schema,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={blockIndexing ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+
+    <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#15171a" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — commercial construction in Wixom, Michigan`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      {fullCrumbs.length > 0 && <Breadcrumbs crumbs={fullCrumbs} />}
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

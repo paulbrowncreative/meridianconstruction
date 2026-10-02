@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import DeliveryTable from '../../components/DeliveryTable.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/services';
+
+const title = 'Commercial Construction Services | Meridian, Wixom MI';
+const description =
+  'General contracting, commercial carpentry, design/build and construction management for commercial interiors and tenant improvements in southeast Michigan.';
+---
+
+<Base title={title} description={description} crumbs={[{ name: 'Services', href: '/services/' }]} pageType="CollectionPage">
+  <PageHero
+    eyebrow="Services"
+    title="Commercial construction services for interiors and tenant improvements"
+    lede="Four services, one standard: premium commercial construction delivered on time and on budget, with the quality and accuracy the drawings call for."
+  />
+
+  <section class="section" aria-label="Services">
+    <div class="container">
+      <ul class="svc-grid" role="list">
+        {
+          services.map((s) => (
+            <li class="svc" data-reveal>
+              <span class="svc__num mono">{s.number}</span>
+              <h2 class="h3 svc__name">
+                <a href={`/services/${s.slug}/`}>{s.name}</a>
+              </h2>
+              <p class="svc__summary">{s.summary}</p>
+              <ul class="ticks svc__list">
+                {s.includes.slice(0, 4).map((i) => <li>{i.title}</li>)}
+              </ul>
+              <span class="link-arrow svc__more" aria-hidden="true">
+                Explore {s.name.toLowerCase()} <Icon name="arrow" />
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section tinted" aria-labelledby="compare-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Compare</p>
+        <h2 class="h2" id="compare-title">Which service fits your project?</h2>
+        <p class="lede">
+          The right delivery method depends on how far along your design is and how you want to hold contracts. If
+          you are unsure, describe your project and we will recommend one.
+        </p>
+      </div>
+      <DeliveryTable />
+    </div>
+  </section>
+
+  <CtaBand location="services" heading="Tell us where your project stands." />
+</Base>
+
+<style>
+  .svc-grid {
+    display: grid;
+    border-top: 2px solid var(--ink);
+  }
+  .svc {
+    position: relative;
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    padding-block: var(--space-7);
+    border-bottom: 1px solid var(--line);
+  }
+  .svc__num {
+    color: var(--accent);
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+  .svc__name a {
+    text-decoration: none;
+  }
+  /* Whole block is clickable via the heading link. */
+  .svc__name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .svc:hover .svc__name a {
+    color: var(--accent);
+  }
+  .svc:focus-within {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .svc__name a:focus-visible {
+    outline: none;
+  }
+  .svc__summary {
+    color: var(--ink-2);
+    max-width: 34rem;
+  }
+  .svc__more {
+    justify-self: start;
+    margin-top: var(--space-2);
+  }
+  @media (min-width: 56rem) {
+    .svc-grid {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--space-8);
+    }
+  }
+</style>

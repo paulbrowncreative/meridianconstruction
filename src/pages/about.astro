@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Steps from '../components/Steps.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+const title = 'About Meridian Construction Companies | Wixom, MI';
+const description =
+  'Meridian Construction Companies is a Wixom, Michigan commercial contractor focused on high-quality, value-engineered projects delivered on time and on budget.';
+
+const principles = [
+  {
+    title: 'Quality and sharp accuracy',
+    text: 'We pride ourselves on work that matches the drawings — dimensions, heights, openings and finishes. Accuracy is what makes the next trade’s work go smoothly and the final inspection a formality.',
+  },
+  {
+    title: 'Value engineering',
+    text: 'Good value is not the cheapest line item. It is the material, detail or sequence that gives you the quality you need for the best price — found early, with your designer, before it costs a change order.',
+  },
+  {
+    title: 'On time, on budget',
+    text: 'Commercial clients plan around our dates: lease starts, store openings, first appointments. We schedule realistically and manage every contractor to hold it.',
+  },
+  {
+    title: 'Worker and site safety',
+    text: 'Quality is never a reason to compromise safety. We keep sites orderly and safe for our crews, other trades, building occupants and the public.',
+  },
+];
+
+const approach = [
+  {
+    title: 'Listen first',
+    text: 'Understand the space, the business that will use it, the budget and the deadline before recommending anything.',
+  },
+  {
+    title: 'Pick the right delivery',
+    text: 'General contracting, design/build or construction management — whichever fits where your project is.',
+  },
+  {
+    title: 'Self-perform the core',
+    text: 'Our own carpenters handle the framing, drywall, ceilings, doors and partitions that shape an interior.',
+  },
+  {
+    title: 'Coordinate everything else',
+    text: 'One schedule, one point of contact and a skilled network of trades for the rest of the work.',
+  },
+];
+---
+
+<Base title={title} description={description} crumbs={[{ name: 'About', href: '/about/' }]} pageType="AboutPage">
+  <PageHero
+    eyebrow="About Meridian"
+    title="A commercial contractor that builds to the line."
+    lede={`${site.name} provides premium commercial construction services from our office in ${site.address.city}, Michigan — general contracting, commercial carpentry, design/build and construction management, delivered on time and on budget.`}
+  />
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="container about">
+      <div class="about__label">
+        <p class="eyebrow">Who we are</p>
+        <h2 class="h3" id="story-title">Builders who own the details.</h2>
+      </div>
+      <div class="prose about__body">
+        <p>
+          A meridian is a line of reference — the line every other measurement is taken from. That is how we think
+          about a commercial interior. Every wall, ceiling and opening has to land where the drawings say, because
+          everything after it depends on it.
+        </p>
+        <p>
+          Meridian builds and remodels commercial interiors: retail stores, offices, medical facilities, food
+          establishments and recreational facilities. Our work centers on interior build-outs and tenant
+          improvements, where landlords and tenants need a space delivered to a specific date for a specific price.
+        </p>
+        <p>
+          We offer four ways to work with us —{' '}
+          {
+            services.map((s, i) => (
+              <>
+                <a href={`/services/${s.slug}/`}>{s.name.toLowerCase()}</a>
+                {i < services.length - 2 ? ', ' : i === services.length - 2 ? ' and ' : ''}
+              </>
+            ))
+          } — so the way your project is delivered fits where it is today, not the other way around. Whichever you
+          choose, our own skilled carpenters perform the core interior scopes, and our network of skilled trades handles
+          the rest.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-night" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What we hold ourselves to</p>
+        <h2 class="h2" id="principles-title">Four principles on every job.</h2>
+      </div>
+      <ul class="principles" role="list">
+        {
+          principles.map((p, i) => (
+            <li class="principle" data-reveal>
+              <span class="mono principle__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h4">{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="approach-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How we work</p>
+        <h2 class="h2" id="approach-title">One accountable team, from first call to turnover.</h2>
+      </div>
+      <Steps steps={approach} />
+    </div>
+  </section>
+
+  <section class="section-tight tinted" aria-labelledby="visit-title">
+    <div class="container visit">
+      <div class="stack" style="--flow: var(--space-3)">
+        <p class="eyebrow">Visit or call</p>
+        <h2 class="h3" id="visit-title">{site.address.street}, {site.address.city}, {site.address.region} {site.address.postalCode}</h2>
+        <p class="muted">In {site.address.county}, close to I-96 and M-5.</p>
+      </div>
+      <div class="btn-row">
+        <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location="about_visit">
+          <Icon name="phone" /> {site.phone.display}
+        </a>
+        <a href={site.directionsUrl} class="btn btn--ghost" target="_blank" rel="noopener">
+          <Icon name="pin" /> Get directions<span class="visually-hidden"> (opens Google Maps in a new tab)</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand location="about" heading="Let’s talk about your space." />
+</Base>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .about__label {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .about__body {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .about__body p:first-child {
+    color: var(--ink);
+    font-size: var(--step-2);
+    line-height: 1.35;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 64rem) {
+    .about {
+      grid-template-columns: 1fr 1.6fr;
+      gap: var(--space-8);
+    }
+    .about__label {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+  .principles {
+    display: grid;
+    gap: var(--space-6) var(--space-7);
+  }
+  .principle {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--night-line);
+  }
+  .principle p {
+    color: var(--on-night-muted);
+  }
+  .principle__num {
+    color: var(--accent-on-night);
+    font-size: var(--step--1);
+  }
+  @media (min-width: 48rem) {
+    .principles {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 72rem) {
+    .principles {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .visit {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .visit {
+      grid-template-columns: 1fr auto;
+    }
+  }
+</style>

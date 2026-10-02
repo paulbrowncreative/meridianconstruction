@@ -1,0 +1,132 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { projects, type Project } from '../../data/projects';
+import { getService } from '../../data/services';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+const title = `${p.title} | ${p.sector} Project in ${p.location} | Meridian`;
+---
+
+<Base
+  title={title}
+  description={p.summary}
+  ogType="article"
+  crumbs={[
+    { name: 'Our Work', href: '/projects/' },
+    { name: p.title, href: `/projects/${p.slug}/` },
+  ]}
+>
+  <article>
+    <header class="container proj-head">
+      <p class="eyebrow">{p.sector} · {p.location}</p>
+      <h1 class="h1">{p.title}</h1>
+      <p class="lede">{p.summary}</p>
+      <dl class="facts">
+        <div><dt>Sector</dt><dd>{p.sector}</dd></div>
+        <div><dt>Location</dt><dd>{p.location}</dd></div>
+        {p.year && <div><dt>Completed</dt><dd>{p.year}</dd></div>}
+        {p.sizeSqFt && <div><dt>Size</dt><dd>{p.sizeSqFt.toLocaleString('en-US')} sq ft</dd></div>}
+        <div>
+          <dt>Services</dt>
+          <dd>
+            {p.services.map((slug, i) => {
+              const s = getService(slug);
+              return (
+                <>
+                  <a href={`/services/${s.slug}/`} class="inline">{s.name}</a>
+                  {i < p.services.length - 1 && ', '}
+                </>
+              );
+            })}
+          </dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="container proj-cover">
+      <Image src={p.cover.src} alt={p.cover.alt} widths={[720, 1200, 1800]} sizes="(min-width: 76rem) 76rem, 100vw" loading="eager" fetchpriority="high" />
+    </div>
+
+    <div class="section container-narrow prose">
+      {p.body.map((para) => <p>{para}</p>)}
+      <h2 class="h3">Scope</h2>
+      <ul class="ticks">{p.scope.map((s) => <li>{s}</li>)}</ul>
+    </div>
+
+    {
+      p.gallery.length > 0 && (
+        <section class="container gallery" aria-label="Project photos">
+          {p.gallery.map((g) => (
+            <figure>
+              <Image src={g.src} alt={g.alt} widths={[480, 800, 1200]} sizes="(min-width: 48rem) 50vw, 100vw" loading="lazy" />
+            </figure>
+          ))}
+        </section>
+      )
+    }
+
+    <p class="container back">
+      <a href="/projects/" class="link-arrow">All projects <Icon name="arrow" /></a>
+    </p>
+  </article>
+
+  <CtaBand location={`project_${p.slug}`} heading="Planning something similar?" />
+</Base>
+
+<style>
+  .proj-head {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--space-7);
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-7);
+    border-top: 1px solid var(--line);
+    padding-top: var(--space-5);
+  }
+  .facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .proj-cover img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .gallery {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  @media (min-width: 48rem) {
+    .gallery {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .back {
+    padding-block: var(--space-8);
+  }
+</style>

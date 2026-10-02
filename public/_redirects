@@ -1,0 +1,18 @@
+# 301s from the previous site's URLs (see docs/AUDIT-AND-STRATEGY.md §6).
+# Netlify matches with or without a trailing slash.
+/company-services                              /services/                           301
+/company-services/general-contracting          /services/general-contracting/       301
+/company-services/design-build                 /services/design-build/              301
+/company-services/commercial-carpentry         /services/commercial-carpentry/      301
+/company-services/construction-management      /services/construction-management/   301
+/about-us-1                                    /about/                              301
+/about-us                                      /about/                              301
+/contact-us-248-669-3910                       /contact/                            301
+/contact-us                                    /contact/                            301
+# The old gallery URL could not be crawled; these cover the common patterns.
+# Confirm against the old site's sitemap / Search Console before launch.
+/gallery                                       /projects/                           301
+/gallery/*                                     /projects/                           301
+/portfolio                                     /projects/                           301
+/projects-gallery                              /projects/                           301
+/home                                          /                                    301

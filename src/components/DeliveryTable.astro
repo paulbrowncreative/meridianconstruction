@@ -1,0 +1,132 @@
+---
+import Icon from './Icon.astro';
+import { deliveryComparison, getService } from '../data/services';
+---
+
+<div class="delivery" role="region" aria-label="Compare delivery methods">
+  <table>
+    <caption class="visually-hidden">Which Meridian service fits your project</caption>
+    <thead>
+      <tr>
+        <th scope="col">Service</th>
+        <th scope="col">Where your project is</th>
+        <th scope="col">How you contract</th>
+        <th scope="col">Best for</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        deliveryComparison.map((row) => {
+          const s = getService(row.slug);
+          return (
+            <tr>
+              <th scope="row">
+                <a href={`/services/${s.slug}/`}>
+                  <span class="mono">{s.number}</span>
+                  <span>{s.name}</span>
+                  <Icon name="arrow" />
+                </a>
+              </th>
+              <td data-label="Where your project is">{row.stage}</td>
+              <td data-label="How you contract">{row.you}</td>
+              <td data-label="Best for">{row.best}</td>
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  thead th {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 var(--space-4) var(--space-3) 0;
+    border-bottom: 1px solid var(--ink);
+  }
+  tbody th,
+  td {
+    padding: var(--space-5) var(--space-4) var(--space-5) 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  td {
+    color: var(--ink-2);
+  }
+  tbody th a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-weight: 700;
+    font-stretch: 108%;
+    font-size: var(--step-1);
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  tbody th a:hover {
+    color: var(--accent);
+  }
+  tbody th .mono {
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--accent);
+  }
+  tbody th :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    align-self: center;
+    flex: none;
+    transition: transform var(--dur) var(--ease);
+  }
+  tbody th a:hover :global(svg) {
+    transform: translateX(3px);
+  }
+
+  /* Stack rows as labelled blocks on narrow screens — no horizontal scroll. */
+  @media (max-width: 52rem) {
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    tr {
+      display: grid;
+      gap: var(--space-2);
+      padding-block: var(--space-5);
+      border-bottom: 1px solid var(--line);
+    }
+    tbody tr:first-child {
+      border-top: 1px solid var(--ink);
+    }
+    tbody th,
+    td {
+      display: block;
+      padding: 0;
+      border: 0;
+    }
+    tbody th {
+      margin-bottom: var(--space-2);
+    }
+    td::before {
+      content: attr(data-label);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  }
+</style>

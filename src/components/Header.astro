@@ -1,0 +1,392 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const links = [
+  { href: '/projects/', label: 'Our Work' },
+  { href: '/about/', label: 'About' },
+  { href: '/contact/', label: 'Contact' },
+];
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__bar">
+    <a href="/" class="site-header__logo" aria-label={`${site.name} — home`}>
+      <Logo />
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <ul class="nav__list" role="list">
+        <li class="nav__item nav__item--has-menu" data-dropdown>
+          <a href="/services/" class="nav__link" aria-current={isActive('/services/') ? 'page' : undefined}>
+            Services
+          </a>
+          <button
+            class="nav__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="services-menu"
+            data-dropdown-toggle
+          >
+            <span class="visually-hidden">Show services</span>
+            <Icon name="chevron" />
+          </button>
+          <ul class="dropdown" id="services-menu" role="list" hidden data-dropdown-menu>
+            {
+              services.map((s) => (
+                <li>
+                  <a
+                    href={`/services/${s.slug}/`}
+                    class="dropdown__link"
+                    aria-current={path === `/services/${s.slug}/` ? 'page' : undefined}
+                  >
+                    <span class="mono dropdown__num">{s.number}</span>
+                    <span>{s.name}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </li>
+        {
+          links.map((l) => (
+            <li class="nav__item">
+              <a href={l.href} class="nav__link" aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href={site.phone.href} class="site-header__phone" data-track="click_to_call" data-track-location="header">
+        <Icon name="phone" />
+        <span class="site-header__phone-text">{site.phone.display}</span>
+        <span class="visually-hidden site-header__phone-sr">Call {site.phone.display}</span>
+      </a>
+      <a href="/contact/" class="btn btn--accent site-header__cta" data-track="cta_click" data-track-location="header">
+        Request an Estimate
+      </a>
+      <button
+        class="menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" class="menu-button__open" />
+        <Icon name="close" class="menu-button__close" />
+        <span class="visually-hidden">Menu</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" hidden data-menu>
+    <nav class="container mobile-menu__inner" aria-label="Mobile">
+      <p class="eyebrow">Services</p>
+      <ul class="mobile-menu__services" role="list">
+        {
+          services.map((s) => (
+            <li>
+              <a href={`/services/${s.slug}/`} aria-current={path === `/services/${s.slug}/` ? 'page' : undefined}>
+                <span class="mono">{s.number}</span>
+                {s.name}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/services/" class="mobile-menu__all">All services <Icon name="arrow" /></a>
+        </li>
+      </ul>
+      <ul class="mobile-menu__links" role="list">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mobile-menu__cta">
+        <a href="/contact/" class="btn btn--accent" data-track="cta_click" data-track-location="mobile_menu">
+          Request an Estimate <Icon name="arrow" />
+        </a>
+        <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location="mobile_menu">
+          <Icon name="phone" /> Call {site.phone.display}
+        </a>
+      </div>
+      <p class="mobile-menu__address muted">
+        {site.address.street}, {site.address.city}, {`${site.address.region} ${site.address.postalCode}`}
+      </p>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(243 240 232 / 0.94);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .site-header.is-scrolled,
+  .site-header.is-open {
+    border-bottom-color: var(--line);
+  }
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    height: var(--header-h);
+  }
+  .site-header__logo {
+    text-decoration: none;
+    margin-right: auto;
+    display: inline-flex;
+    padding-block: var(--space-2);
+  }
+
+  /* Desktop nav */
+  .nav {
+    display: none;
+  }
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .nav__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+  }
+  .nav__item--has-menu .nav__link {
+    padding-right: 0.15rem;
+  }
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.45rem;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease);
+  }
+  .nav__item--has-menu .nav__link::after {
+    right: 0.15rem;
+  }
+  .nav__link:hover::after,
+  .nav__link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  .nav__toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2.75rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .nav__toggle :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform var(--dur) var(--ease);
+  }
+  .nav__toggle[aria-expanded='true'] :global(svg) {
+    transform: rotate(180deg);
+  }
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 19rem;
+    padding: var(--space-2);
+    margin: 0;
+    list-style: none;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-1);
+  }
+  .dropdown__link {
+    display: flex;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: 0.7rem 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+  }
+  .dropdown__link:hover,
+  .dropdown__link[aria-current='page'] {
+    background: var(--paper-2);
+  }
+  .dropdown__num {
+    color: var(--accent);
+    font-size: var(--step--1);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .site-header__phone {
+    display: inline-flex;
+    white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    font-weight: 650;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .site-header__phone :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--accent);
+  }
+  .site-header__phone-text,
+  .site-header__cta {
+    display: none;
+  }
+  .menu-button {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+  }
+  .menu-button :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .menu-button :global(.menu-button__close),
+  .menu-button[aria-expanded='true'] :global(.menu-button__open) {
+    display: none;
+  }
+  .menu-button[aria-expanded='true'] :global(.menu-button__close) {
+    display: block;
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: var(--paper);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-top: 1px solid var(--line);
+  }
+  .mobile-menu__inner {
+    padding-block: var(--space-6) var(--space-8);
+    display: grid;
+    gap: var(--space-5);
+  }
+  .mobile-menu__services,
+  .mobile-menu__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .mobile-menu__services a,
+  .mobile-menu__links a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    font-weight: 700;
+    font-stretch: 110%;
+    font-size: var(--step-1);
+  }
+  .mobile-menu__services .mono {
+    color: var(--accent);
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+  .mobile-menu__all {
+    font-size: var(--step-0) !important;
+    color: var(--accent);
+    align-items: center !important;
+  }
+  .mobile-menu__all :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .mobile-menu a[aria-current='page'] {
+    color: var(--accent);
+  }
+  .mobile-menu__cta {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 40rem) {
+    .site-header__cta {
+      display: inline-flex;
+      min-height: 2.75rem;
+      padding-block: 0.6rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .nav {
+      display: block;
+    }
+    .site-header__logo {
+      margin-right: var(--space-4);
+    }
+    .nav {
+      margin-right: auto;
+    }
+    .menu-button,
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+  @media (min-width: 76rem) {
+    .site-header__phone-text {
+      display: inline;
+    }
+    .site-header__phone-sr {
+      display: none;
+    }
+    .site-header__phone {
+      padding-inline: var(--space-3);
+    }
+  }
+</style>

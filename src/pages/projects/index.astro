@@ -1,0 +1,186 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { projects } from '../../data/projects';
+import { site } from '../../data/site';
+
+const title = 'Commercial Interiors We Build | Meridian Construction';
+const description =
+  'Retail, office, medical, food service and recreational interiors built by Meridian Construction in southeast Michigan — and what each one demands.';
+
+const sectors = [
+  {
+    name: 'Retail',
+    text: 'Store openings are tied to lease dates and selling seasons, so the schedule is everything. Retail build-outs mean display walls with blocking for fixtures, fitting rooms, stockrooms and restrooms — often under shopping-center rules about work hours and deliveries.',
+    services: ['general-contracting', 'commercial-carpentry'],
+  },
+  {
+    name: 'Office',
+    text: 'Private offices, conference rooms and open workspace, with ceilings coordinated around lighting, diffusers and sprinklers. Office suites are frequently built in occupied buildings, so phasing, noise and clean, safe work areas matter as much as the finished walls.',
+    services: ['general-contracting', 'design-build'],
+  },
+  {
+    name: 'Medical',
+    text: 'Exam rooms, waiting areas and support spaces where layout drives patient flow. Medical interiors call for careful attention to accessible design, sound separation between rooms and in-wall backing for equipment, cabinets and grab bars.',
+    services: ['general-contracting', 'construction-management'],
+  },
+  {
+    name: 'Food service',
+    text: 'Restaurants, cafés and other food establishments combine a public dining room with a working kitchen. Finishes in back-of-house areas must stand up to cleaning and inspection, and construction has to be coordinated with kitchen equipment and opening-day inspections.',
+    services: ['design-build', 'general-contracting'],
+  },
+  {
+    name: 'Recreational',
+    text: 'Fitness, entertainment and recreational facilities take heavy daily use. Durable wall and ceiling systems, hard-wearing doors and hardware, and well-built restrooms and locker areas keep the space performing long after opening day.',
+    services: ['commercial-carpentry', 'construction-management'],
+  },
+];
+const serviceNames: Record<string, string> = {
+  'general-contracting': 'General contracting',
+  'commercial-carpentry': 'Commercial carpentry',
+  'design-build': 'Design/build',
+  'construction-management': 'Construction management',
+};
+---
+
+<Base title={title} description={description} crumbs={[{ name: 'Our Work', href: '/projects/' }]} pageType="CollectionPage">
+  <PageHero
+    eyebrow="Our work"
+    title="The commercial interiors we build"
+    lede="Meridian’s carpenters and project teams build and remodel retail space, office space, medical facilities, food establishments and recreational facilities. Here is what each type of space demands — and how we approach it."
+  />
+
+  <section class="section" aria-label="Sectors">
+    <div class="container">
+      <ol class="sectors" role="list">
+        {
+          sectors.map((s, i) => (
+            <li class="sector" id={s.name.toLowerCase().replace(/\s+/g, '-')} data-reveal>
+              <span class="mono sector__key">{String.fromCharCode(65 + i)}</span>
+              <h2 class="h2 sector__name">{s.name}</h2>
+              <div class="sector__body">
+                <p>{s.text}</p>
+                <p class="sector__links">
+                  <span class="mono">Typical services:</span>
+                  {s.services.map((slug, j) => (
+                    <>
+                      <a href={`/services/${slug}/`} class="inline">
+                        {serviceNames[slug]}
+                      </a>
+                      {j < s.services.length - 1 && ', '}
+                    </>
+                  ))}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section tinted" aria-labelledby="portfolio-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Project case studies</p>
+        <h2 class="h2" id="portfolio-title">Recent projects</h2>
+      </div>
+      {
+        projects.length > 0 ? (
+          <div class="grid">
+            {projects.map((p) => (
+              <ProjectCard project={p} />
+            ))}
+          </div>
+        ) : (
+          <div class="pending">
+            <p class="lede">
+              Case studies with photography of recent Meridian projects will be published here. Until then, ask us
+              for examples of comparable work and references when you request an estimate.
+            </p>
+            <div class="btn-row">
+              <a href="/contact/" class="btn btn--accent" data-track="cta_click" data-track-location="projects_pending">
+                Request an Estimate <Icon name="arrow" />
+              </a>
+              <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location="projects_pending">
+                <Icon name="phone" /> {site.phone.display}
+              </a>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand location="projects" heading="Planning a build-out?" />
+</Base>
+
+<style>
+  .sectors {
+    border-top: 2px solid var(--ink);
+  }
+  .sector {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-3) var(--space-4);
+    padding-block: var(--space-7);
+    border-bottom: 1px solid var(--line);
+  }
+  .sector__key {
+    color: var(--accent);
+    font-size: var(--step--1);
+    padding-top: 0.6rem;
+  }
+  .sector__body {
+    grid-column: 2;
+    display: grid;
+    gap: var(--space-4);
+    color: var(--ink-2);
+    max-width: 42rem;
+  }
+  .sector__links .mono {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: var(--space-2);
+  }
+  @media (min-width: 60rem) {
+    .sector {
+      grid-template-columns: 3rem minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-6);
+    }
+    .sector__body {
+      grid-column: 3;
+      font-size: var(--step-1);
+      line-height: 1.55;
+    }
+    .sector__links {
+      font-size: var(--step-0);
+    }
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 48rem) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 72rem) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .pending {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-7) var(--space-6);
+    border: 1.5px dashed var(--line-strong);
+    background: var(--paper);
+  }
+</style>

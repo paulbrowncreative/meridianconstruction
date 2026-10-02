@@ -1,0 +1,88 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+interface Props {
+  heading?: string;
+  text?: string;
+  location: string;
+  /** Service slug to preselect on the estimate form. */
+  service?: string;
+}
+const {
+  heading = 'Have drawings? Send them over.',
+  text = 'Upload your plans or describe the space, and we will review the scope and follow up to talk through price, schedule and the right way to deliver it.',
+  location,
+  service,
+} = Astro.props;
+const href = service ? `/contact/?service=${service}` : '/contact/';
+---
+
+<section class="cta on-night" aria-labelledby={`cta-${location}`}>
+  <div class="container cta__inner">
+    <div class="cta__copy">
+      <p class="eyebrow">Request an estimate</p>
+      <h2 class="h2" id={`cta-${location}`}>{heading}</h2>
+      <p class="lede">{text}</p>
+    </div>
+    <div class="cta__actions">
+      <a href={href} class="btn btn--accent" data-track="cta_click" data-track-location={`cta_${location}`}>
+        Request an Estimate <Icon name="arrow" />
+      </a>
+      <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location={`cta_${location}`}>
+        <Icon name="phone" /> Call {site.phone.display}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding-block: var(--space-9);
+    overflow: hidden;
+  }
+  /* Faint survey grid + meridian line */
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--night-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--night-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.35;
+    mask-image: linear-gradient(90deg, transparent, #000 60%);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%);
+    pointer-events: none;
+  }
+  .cta__inner {
+    position: relative;
+    display: grid;
+    gap: var(--space-7);
+    align-items: end;
+  }
+  .cta__copy {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+  }
+  .cta__actions {
+    display: grid;
+    gap: var(--space-3);
+  }
+  @media (min-width: 40rem) {
+    .cta__actions {
+      grid-auto-flow: column;
+      justify-content: start;
+    }
+  }
+  @media (min-width: 64rem) {
+    .cta__inner {
+      grid-template-columns: 1fr auto;
+    }
+    .cta__actions {
+      grid-auto-flow: row;
+    }
+  }
+</style>

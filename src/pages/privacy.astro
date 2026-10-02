@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+
+<Base
+  title="Privacy Notice | Meridian Construction Companies"
+  description="How Meridian Construction Companies collects and uses the information you send through this website."
+  crumbs={[{ name: 'Privacy notice', href: '/privacy/' }]}
+>
+  <PageHero eyebrow="Privacy" title="Privacy notice" lede="Last updated October 2, 2026." />
+  <section class="section">
+    <div class="container prose">
+      <h2 class="h3">What we collect</h2>
+      <p>
+        When you submit the estimate request form, we collect the information you enter — such as your name, company,
+        email address, phone number, project details — and any file you choose to attach. If you call or email us, we
+        receive the information you share in that conversation.
+      </p>
+      <h2 class="h3">How we use it</h2>
+      <p>
+        We use this information only to respond to your inquiry, prepare estimates and communicate with you about your
+        project. We do not sell your information or share it with third parties for their marketing.
+      </p>
+      <h2 class="h3">Service providers</h2>
+      <p>
+        Form submissions are received and stored by our website hosting provider’s form service so that we can read
+        them. Like most websites, our host may also keep standard server logs (such as IP address and browser type)
+        for security and reliability.
+      </p>
+      <h2 class="h3">Cookies and analytics</h2>
+      <p>
+        This website does not currently use advertising or analytics cookies. If that changes, we will update this
+        notice and, where required, ask for your consent first.
+      </p>
+      <h2 class="h3">Retention and your choices</h2>
+      <p>
+        We keep inquiry information for as long as needed to respond to you and for our ordinary business records. To
+        ask what information we hold about you, or to request that we correct or delete it, call us at
+        <a href={site.phone.href}>{site.phone.display}</a> or write to {site.name}, {site.address.street},
+        {site.address.city}, {site.address.region} {site.address.postalCode}.
+      </p>
+    </div>
+  </section>
+</Base>
