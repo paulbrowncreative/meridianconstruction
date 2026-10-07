@@ -9,10 +9,13 @@
 /about-us                                      /about/                              301
 /contact-us-248-669-3910                       /contact/                            301
 /contact-us                                    /contact/                            301
-# The old gallery URL could not be crawled; these cover the common patterns.
-# Confirm against the old site's sitemap / Search Console before launch.
+# Gallery and project pages (confirmed by crawling the old site, Oct 2026).
 /gallery                                       /projects/                           301
 /gallery/*                                     /projects/                           301
-/portfolio                                     /projects/                           301
-/projects-gallery                              /projects/                           301
+/aqua-tots                                     /projects/                           301
+/nkd-pizza                                     /projects/                           301
+/menchies                                      /projects/                           301
+/public-private                                /projects/                           301
+/about-us-1/portfolio                          /projects/                           301
+/sitemap                                       /sitemap-index.xml                   301
 /home                                          /                                    301

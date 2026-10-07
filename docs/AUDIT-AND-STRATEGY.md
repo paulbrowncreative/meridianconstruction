@@ -176,3 +176,30 @@ After launch, submit the new sitemap in Google Search Console and watch Coverage
   - alternating paper, tinted and night sections for rhythm;
   - sticky section headings on long two-column sections.
 - **No stock photography.** None could be presented honestly as Meridian's work, so the design carries itself on type, drawings and structure. Real project photos slot into the portfolio when supplied.
+
+## 8. Addendum — direct crawl of the legacy site (October 7, 2026)
+
+Once `http://www.mymeridianconstruction.com/` became reachable, all 19 pages were crawled. The old site is an IONOS / Jimdo "MyWebsite" build, © 2016. These facts are now **verified from the site itself**:
+
+| Project (old URL) | Type | Service | Locations listed |
+|---|---|---|---|
+| Aqua-Tots Swim School (`/aqua-tots/`) | Recreational facility | General contractor | Canton, Novi, Troy, Sterling Heights, Auburn Hills (then "coming soon"), MI; Costa Mesa, CA (then "coming soon") |
+| NKD Pizza (`/nkd-pizza/`) | Food franchise | General contractor | Sterling Heights, Shelby Township, MI |
+| Menchie's Frozen Yogurt (`/menchies/`) | Food franchise | General contractor | Lansing, Pittsfield Charter Township, MI |
+| Public-Private (`/public-private/`) | Public municipalities | General contractor | Secretary of State, Inkster; City of Inkster Justice Center; Michigan Liquor Control Commission, Southfield; Department of Human Services in Inkster, Flint and Southfield |
+
+**Other findings:**
+
+- **"Happy customers" logo wall** (`/about-us-1/portfolio/`): Aqua-Tots, NKD Pizza, Menchie's, Naked Fuel Juice Bar, Jimmy John's, Halo Burger, Subway, Shell, GM, Central Michigan University, Boji Group, Grace Chapel, MI Dept. of Human Services, City of Inkster, MLCC, MI Secretary of State.
+  - These are third-party trademarks. Re-use them only with each client's permission and their official logo files.
+- **Copy:**
+  - home page: "Just a few of our repeat customers";
+  - About page: "free phone consultation";
+  - GC page: "trusted subcontractors".
+- **Geography:** projects reach Lansing, Flint and Pittsfield Twp., so the reach is wider than metro Detroit.
+- **Brand:** the logo is a blue (#0A4498) square holding a white grid panel and an extruded "M", with "MERIDIAN / CONSTRUCTION / COMPANIES" set in a slab serif. The only file online is 112×104 px. Ask the client for the original vector.
+- **Photography:**
+  - 107 images in total, all small: 1024 px maximum, most 450–800 px.
+  - The stock header banners were not upscaled.
+  - Upscaled images are in `src/assets/legacy/`, and per-image provenance is in `docs/IMAGE-INVENTORY.md`.
+- **Redirects:** the real gallery and project URLs are now in `public/_redirects`.
