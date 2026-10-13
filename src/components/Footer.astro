@@ -11,7 +11,7 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="site-footer__top">
       <div class="site-footer__brand">
-        <a href="/" aria-label={`${site.name} — home`} class="site-footer__logo"><Logo tone="paper" /></a>
+        <a href="/" class="site-footer__logo"><Logo tone="paper" /></a>
         <p class="muted">
           Commercial general contracting, carpentry, design/build and construction management from Wixom,
           Michigan.
@@ -22,6 +22,7 @@ const year = new Date().getFullYear();
         <h2 class="site-footer__heading mono">Services</h2>
         <ul role="list">
           {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.name}</a></li>)}
+          <li><a href="/franchise-build-outs/">Franchise Build-Outs</a></li>
         </ul>
       </nav>
 
@@ -30,6 +31,7 @@ const year = new Date().getFullYear();
         <ul role="list">
           <li><a href="/services/">All services</a></li>
           <li><a href="/projects/">Our work</a></li>
+          <li><a href="/resources/">Resources &amp; guides</a></li>
           <li><a href="/about/">About Meridian</a></li>
           <li><a href="/contact/">Request an estimate</a></li>
         </ul>

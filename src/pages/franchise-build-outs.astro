@@ -1,0 +1,263 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Steps from '../components/Steps.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { site } from '../data/site';
+import { projects } from '../data/projects';
+import { faqSchema } from '../data/schema';
+
+const title = 'Franchise Build-Out Contractor in Michigan | Meridian';
+const description =
+  'Franchise build-out contractor in Michigan. Meridian has built multiple locations for Aqua-Tots, NKD Pizza and Menchie’s — to brand standard and on schedule.';
+
+const franchiseProjects = projects.filter((p) => p.type === 'Food franchise' || p.slug === 'aqua-tots-swim-schools');
+const unitCount = franchiseProjects.reduce((n, p) => n + p.locations.length, 0);
+
+const challenges = [
+  {
+    title: 'The brand standard is non-negotiable',
+    text: 'Franchise prototypes specify finishes, fixtures, signage, colors and layouts down to the detail. Substitutions usually need franchisor approval, so the contractor has to read the brand book as carefully as the drawings.',
+  },
+  {
+    title: 'Opening day is fixed before construction starts',
+    text: 'Training, hiring, grand-opening marketing and rent all key off the opening date. The construction schedule has to be built backward from it — including inspections and equipment deliveries.',
+  },
+  {
+    title: 'Three parties sign off',
+    text: 'The franchisee pays for the work, the franchisor approves it against the brand standard, and the landlord approves it under the lease. A good contractor keeps all three informed without slowing the job down.',
+  },
+  {
+    title: 'Location two has to match location one',
+    text: 'Multi-unit franchisees need every store to look and work the same. Repeating a build with the same contractor makes the second, third and fourth locations faster and more predictable.',
+  },
+];
+
+const steps = [
+  { title: 'Review the prototype', text: 'Send the franchisor’s prototype drawings, brand standards and your lease exhibit. We review them against the actual space.' },
+  { title: 'Price & adapt', text: 'We price the build-out and flag where the prototype needs adapting to existing conditions — before you submit for approvals.' },
+  { title: 'Schedule to opening day', text: 'The schedule is built backward from your opening, with long-lead equipment, inspections and franchisor walk-throughs on it.' },
+  { title: 'Build, inspect, open', text: 'Our carpenters build the brand’s signature elements; we coordinate every trade, close out inspections and hand over a store ready to train in.' },
+];
+
+const faqs = [
+  {
+    q: 'Which franchise brands has Meridian built for?',
+    a: 'Meridian has served as general contractor for Aqua-Tots Swim Schools (Canton, Novi, Troy and Sterling Heights), NKD Pizza (Sterling Heights and Shelby Township) and Menchie’s Frozen Yogurt (Lansing and Pittsfield Charter Township). Its previous website also listed Jimmy John’s, Subway and Halo Burger among its customers.',
+  },
+  {
+    q: 'Can you work from the franchisor’s prototype drawings?',
+    a: 'Yes. Most franchise build-outs start from prototype drawings and a brand standards package, adapted by an architect to the specific site. We price from that set and point out where the prototype and the real space don’t agree.',
+  },
+  {
+    q: 'Do you build multiple locations for the same franchisee?',
+    a: 'Yes — several of Meridian’s franchise clients came back for location after location. Repeat builds let us carry lessons from one store to the next.',
+  },
+  {
+    q: 'What do you need to start pricing a franchise build-out?',
+    a: 'The site address, the franchisor’s prototype or site-adapted drawings, any brand standards or vendor lists, your lease exhibit or landlord work letter if you have it, and your target opening date.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  crumbs={[{ name: 'Franchise Build-Outs', href: '/franchise-build-outs/' }]}
+  schema={[
+    {
+      '@type': 'Service',
+      '@id': `${site.url}/franchise-build-outs/#service`,
+      name: 'Franchise build-out construction',
+      serviceType: 'Franchise build-out general contracting',
+      description,
+      provider: { '@id': `${site.url}/#organization` },
+      areaServed: { '@type': 'State', name: 'Michigan' },
+      url: `${site.url}/franchise-build-outs/`,
+    },
+    faqSchema(faqs),
+  ]}
+>
+  <header class="fb-hero">
+    <div class="container fb-hero__grid">
+      <div class="fb-hero__copy">
+        <p class="eyebrow">Franchise build-outs · Michigan</p>
+        <h1 class="h1">Franchise build-outs that open on time and match the brand.</h1>
+        <p class="lede">
+          Meridian is a commercial general contractor that franchise owners come back to. We have built{' '}
+          {unitCount} documented locations for Aqua-Tots Swim Schools, NKD Pizza and Menchie’s Frozen Yogurt across
+          Michigan — each one to the franchisor’s standard and the owner’s opening date.
+        </p>
+        <div class="btn-row">
+          <a href="/contact/?service=general-contracting" class="btn btn--accent" data-track="cta_click" data-track-location="franchise_hero">
+            Price My Build-Out <Icon name="arrow" />
+          </a>
+          <a href={site.phone.href} class="btn btn--ghost" data-track="click_to_call" data-track-location="franchise_hero">
+            <Icon name="phone" /> {site.phone.display}
+          </a>
+        </div>
+      </div>
+      <dl class="fb-stats">
+        <div>
+          <dt>Franchise locations documented</dt>
+          <dd>{unitCount}</dd>
+        </div>
+        <div>
+          <dt>Franchise brands with repeat builds</dt>
+          <dd>3</dd>
+        </div>
+        <div>
+          <dt>Michigan communities</dt>
+          <dd>{new Set(franchiseProjects.flatMap((p) => p.locations)).size}</dd>
+        </div>
+      </dl>
+    </div>
+  </header>
+
+  <section class="section tinted" aria-labelledby="fb-work-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Franchise projects</p>
+        <h2 class="h2" id="fb-work-title">Built for franchise brands, location after location.</h2>
+      </div>
+      <div class="fb-grid">
+        {franchiseProjects.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="fb-why-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Why franchise construction is different</p>
+        <h2 class="h2" id="fb-why-title">What a franchise build-out demands from your contractor.</h2>
+      </div>
+      <ul class="fb-challenges" role="list">
+        {
+          challenges.map((c, i) => (
+            <li data-reveal>
+              <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h4">{c.title}</h3>
+              <p>{c.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section on-night" aria-labelledby="fb-steps-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How we build your location</p>
+        <h2 class="h2" id="fb-steps-title">From prototype drawings to opening day.</h2>
+      </div>
+      <Steps steps={steps} />
+      <p class="fb-guide">
+        Planning your first unit? Read the{' '}
+        <a href="/resources/franchise-build-out-checklist/">franchise build-out checklist</a>.
+      </p>
+    </div>
+  </section>
+
+  <FaqList faqs={faqs} heading="Franchise build-out questions" />
+
+  <CtaBand
+    location="franchise"
+    heading="Signed the lease? Send us the prototype."
+    text="Upload your prototype drawings or site plan and tell us your opening date. We will review the scope and follow up with next steps."
+    service="general-contracting"
+  />
+</Base>
+
+<style>
+  .fb-hero {
+    padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--space-8);
+  }
+  .fb-hero__grid {
+    display: grid;
+    gap: var(--space-7);
+    align-items: end;
+  }
+  .fb-hero__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .fb-stats {
+    display: grid;
+    margin: 0;
+    border-top: 2px solid var(--ink);
+  }
+  .fb-stats div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .fb-stats dt {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .fb-stats dd {
+    margin: 0;
+    font-size: var(--step-4);
+    font-weight: 800;
+    font-stretch: 118%;
+    color: var(--accent);
+    line-height: 1;
+  }
+  @media (min-width: 64rem) {
+    .fb-hero__grid {
+      grid-template-columns: 1.7fr 1fr;
+      gap: var(--space-8);
+    }
+  }
+  .fb-grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48rem) {
+    .fb-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .fb-challenges {
+    display: grid;
+    gap: var(--space-6) var(--space-7);
+    border-top: 2px solid var(--ink);
+    padding-top: var(--space-6);
+  }
+  .fb-challenges li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+  .fb-challenges .mono {
+    color: var(--accent);
+    font-size: var(--step--1);
+  }
+  .fb-challenges p {
+    color: var(--ink-2);
+  }
+  @media (min-width: 48rem) {
+    .fb-challenges {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .fb-guide {
+    margin-top: var(--space-7);
+    color: var(--on-night-muted);
+  }
+  .fb-guide a {
+    color: var(--on-night);
+    font-weight: 650;
+    text-underline-offset: 0.2em;
+  }
+</style>

@@ -22,10 +22,13 @@ Requires Node 20+ (22 recommended).
 src/
   data/site.ts        ← business facts (NAP, optional email/hours/license). Edit here first.
   data/services.ts    ← all service page copy, FAQs, delivery comparison
-  data/projects.ts    ← portfolio case studies (empty until real projects are supplied)
+  data/projects.ts    ← case studies (verified facts + photos), client list, project cities
   data/schema.ts      ← JSON-LD builders (only emit verified fields)
   layouts/Base.astro  ← <head>, SEO/OG tags, structured data, header/footer
-  components/         ← Header, Footer, PlanDrawing, CtaBand, FaqList, DeliveryTable, Steps…
+  layouts/Article.astro ← guide layout (Article schema, contents, sidebar CTA)
+  components/         ← Header, Footer, ProjectCard, Gallery, Lightbox, BeforeAfter, ClientList, CtaBand, FaqList…
+  assets/legacy/      ← AI-upscaled photos from the old site (see docs/IMAGE-INVENTORY.md)
+  assets/brand/       ← logo mark
   pages/              ← routes (file-based)
   scripts/            ← nav/menu, reveal, estimate form, analytics bridge
   styles/global.css   ← design tokens + base styles
@@ -34,7 +37,17 @@ tools/generate-images.mjs ← regenerates og-default.png and icons (needs Playwr
 netlify.toml          ← build, headers, noindex for previews
 ```
 
-## Deployment (Netlify — recommended)
+## Deploying from the zip (fastest)
+
+`meridian-site-deploy.zip` contains the finished production build (the contents of `dist/`).
+
+1. In Netlify, choose **Add new site → Deploy manually** and drag the **unzipped folder** onto the page.
+2. Turn on form detection: *Site configuration → Forms → Enable form detection*. Then drag the folder in once more so the `estimate` form is registered.
+3. Follow steps 2, 3 and 5 below (domain, form email notifications, Search Console).
+
+Every later change needs a rebuild (`npm run build`). For that reason, the Git-based setup below is the better long-term home.
+
+## Deployment (Netlify, recommended)
 
 1. Push this repo to GitHub and choose **Add new site → Import from Git** in Netlify. The build settings are read from `netlify.toml`.
 2. **Domain:** add `www.mymeridianconstruction.com` as the primary domain and the apex as a redirect. Netlify provisions HTTPS automatically.
@@ -82,17 +95,17 @@ Fields left as `null` in `src/data/site.ts` stay hidden until they are filled in
 
 | Needed | Where it goes |
 |---|---|
-| Official **logo** (SVG) | Replace markup in `src/components/Logo.astro`, then re-run `tools/generate-images.mjs` |
+| Original **vector logo** (SVG/AI/EPS). The site currently uses the AI-upscaled legacy mark | Replace `src/assets/brand/meridian-mark.png`, then re-run `tools/generate-images.mjs` |
 | Public **email** for estimates | `site.email` |
 | **Office hours** | `site.hours` |
 | **Legal name** (e.g. "…, Inc.") | `site.legalName` |
 | **Founding year** (directories suggest ~2013 — unverified) | `site.foundingYear` |
 | **License** number, **insurance** statement | `site.licenseNumber`, `site.insuranceStatement` |
 | Google Business Profile / LinkedIn / Facebook URLs | `site.sameAs` |
-| **Project photography + details** (client-approved) | `src/data/projects.ts` (instructions in file) |
+| Camera-original **project photos** to replace the upscaled legacy images, plus any new projects | `src/data/projects.ts` |
+| Confirmation that the **client list** and **case studies** are still OK to publish | `src/data/projects.ts` (`clients`, `projects`) |
 | **Testimonials / reviews** (real, attributable, permissioned) | Add a section when available — never fabricate |
-| Confirmed **service radius** | Unlocks a genuine service-area page |
-| The old site's **gallery URL** | `public/_redirects` |
+| Confirmed **service radius** | Unlocks genuine city/service-area pages |
 | Confirm Meridian carpentry is offered to other GCs (subcontract) as well as within its own contracts | `src/data/services.ts` copy |
 
 ## Editing content

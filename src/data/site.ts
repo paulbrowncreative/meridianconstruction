@@ -35,8 +35,8 @@ export const site = {
   licenseNumber: null as string | null, // Michigan Residential Builder / M&A license, if applicable
   insuranceStatement: null as string | null, // e.g. "Fully insured — COI on request"
   sameAs: [] as string[], // Google Business Profile, LinkedIn, Facebook URLs once confirmed
-  // The building types the existing site names under its carpentry service.
-  sectors: ['Retail', 'Office', 'Medical', 'Food service', 'Recreational'],
+  // Building types named on the previous site (carpentry service + project pages).
+  sectors: ['Retail', 'Office', 'Medical', 'Food service', 'Recreational', 'Public sector'],
 } as const;
 
 export type Site = typeof site;

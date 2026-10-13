@@ -11,11 +11,12 @@
 /contact-us                                    /contact/                            301
 # Gallery and project pages (confirmed by crawling the old site, Oct 2026).
 /gallery                                       /projects/                           301
+/gallery/public-private                        /projects/public-sector-offices/     301
 /gallery/*                                     /projects/                           301
-/aqua-tots                                     /projects/                           301
-/nkd-pizza                                     /projects/                           301
-/menchies                                      /projects/                           301
-/public-private                                /projects/                           301
+/aqua-tots                                     /projects/aqua-tots-swim-schools/    301
+/nkd-pizza                                     /projects/nkd-pizza/                 301
+/menchies                                      /projects/menchies-frozen-yogurt/    301
+/public-private                                /projects/public-sector-offices/     301
 /about-us-1/portfolio                          /projects/                           301
 /sitemap                                       /sitemap-index.xml                   301
 /home                                          /                                    301

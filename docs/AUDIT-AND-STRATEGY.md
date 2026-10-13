@@ -203,3 +203,29 @@ Once `http://www.mymeridianconstruction.com/` became reachable, all 19 pages wer
   - The stock header banners were not upscaled.
   - Upscaled images are in `src/assets/legacy/`, and per-image provenance is in `docs/IMAGE-INVENTORY.md`.
 - **Redirects:** the real gallery and project URLs are now in `public/_redirects`.
+
+## 9. Update — October 13, 2026
+
+The legacy crawl made it possible to replace placeholders with verified material:
+
+- **Brand:** the site adopts Meridian's own blue (`#0A4498`) and logo mark, in place of the interim vermillion and wordmark. Navy is used for dark sections.
+- **IA additions:**
+
+  | URL | Purpose |
+  |---|---|
+  | `/projects/<slug>/` | 4 case studies |
+  | `/franchise-build-outs/` | Commercial-intent landing page backed by 8 documented franchise locations |
+  | `/resources/` | Guide index |
+  | `/resources/tenant-improvement-process/` | Guide (informational intent; feeds GC and design/build) |
+  | `/resources/franchise-build-out-checklist/` | Guide (feeds the franchise page) |
+
+- **Topic clusters:**
+  - **TI cluster:** GC service → TI guide → case studies.
+  - **Franchise cluster:** franchise page → franchise checklist → Aqua-Tots / NKD / Menchie's case studies.
+  - **Carpentry cluster:** carpentry service → job-site gallery → Aqua-Tots soffit case study.
+- **Local signals:**
+  - "Where we've built" lists 10 Michigan communities, each linked to its case study.
+  - `areaServed: Michigan` in the schema.
+  - Each case study carries its project cities.
+  - Still no city doorway pages: city pages should come only when each one can carry a real local project.
+- **Redirects:** each old project URL (`/aqua-tots/`, `/nkd-pizza/`, `/menchies/`, `/public-private/`, `/gallery/public-private/`) now 301s to its matching case study, preserving exact-match equity.

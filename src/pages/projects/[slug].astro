@@ -1,10 +1,15 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Icon from '../../components/Icon.astro';
+import Gallery from '../../components/Gallery.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 import { projects, type Project } from '../../data/projects';
 import { getService } from '../../data/services';
+import { site } from '../../data/site';
 
 export function getStaticPaths() {
   return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
@@ -14,87 +19,179 @@ interface Props {
   project: Project;
 }
 const { project: p } = Astro.props;
-const title = `${p.title} | ${p.sector} Project in ${p.location} | Meridian`;
+const services = p.services.map(getService);
+const others = projects.filter((x) => x.slug !== p.slug).slice(0, 3);
+const og = await getImage({ src: p.cover.src, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 });
+const url = new URL(`/projects/${p.slug}/`, Astro.site).href;
+const imageObjects = await Promise.all(
+  [p.cover, ...(p.pairs?.flatMap((x) => [x.before, x.after]) ?? []), ...p.gallery].map(async (ph) => {
+    const img = await getImage({ src: ph.src, width: 1600, format: 'jpg', quality: 80 });
+    return { '@type': 'ImageObject', contentUrl: new URL(img.src, Astro.site).href, caption: ph.alt };
+  }),
+);
 ---
 
 <Base
-  title={title}
-  description={p.summary}
-  ogType="article"
+  title={p.seoTitle}
+  description={p.metaDescription}
+  ogImage={og.src}
   crumbs={[
     { name: 'Our Work', href: '/projects/' },
     { name: p.title, href: `/projects/${p.slug}/` },
   ]}
+  schema={[
+    {
+      '@type': 'CreativeWork',
+      '@id': `${url}#project`,
+      name: `${p.title} — ${p.type}`,
+      description: p.summary,
+      url,
+      creator: { '@id': `${site.url}/#organization` },
+      about: p.services.map((s) => ({ '@id': `${site.url}/services/${s}/#service` })),
+      locationCreated: p.locations.map((l) => ({ '@type': 'Place', name: l })),
+      image: imageObjects,
+    },
+  ]}
 >
   <article>
     <header class="container proj-head">
-      <p class="eyebrow">{p.sector} · {p.location}</p>
-      <h1 class="h1">{p.title}</h1>
-      <p class="lede">{p.summary}</p>
+      <div class="proj-head__copy">
+        <p class="eyebrow">{p.sector} · {p.type}</p>
+        <h1 class="h1">{p.title}</h1>
+        <p class="lede">{p.summary}</p>
+      </div>
       <dl class="facts">
-        <div><dt>Sector</dt><dd>{p.sector}</dd></div>
-        <div><dt>Location</dt><dd>{p.location}</dd></div>
-        {p.year && <div><dt>Completed</dt><dd>{p.year}</dd></div>}
-        {p.sizeSqFt && <div><dt>Size</dt><dd>{p.sizeSqFt.toLocaleString('en-US')} sq ft</dd></div>}
         <div>
-          <dt>Services</dt>
+          <dt>Client</dt>
+          <dd>{p.client}</dd>
+        </div>
+        <div>
+          <dt>Building type</dt>
+          <dd>{p.type}</dd>
+        </div>
+        <div>
+          <dt>Locations</dt>
+          <dd>{p.locations.join(' · ')}</dd>
+        </div>
+        <div>
+          <dt>Meridian’s role</dt>
           <dd>
-            {p.services.map((slug, i) => {
-              const s = getService(slug);
-              return (
+            {
+              services.map((s, i) => (
                 <>
-                  <a href={`/services/${s.slug}/`} class="inline">{s.name}</a>
-                  {i < p.services.length - 1 && ', '}
+                  <a href={`/services/${s.slug}/`} class="inline">
+                    {s.name}
+                  </a>
+                  {i < services.length - 1 && ', '}
                 </>
-              );
-            })}
+              ))
+            }
           </dd>
         </div>
       </dl>
     </header>
 
     <div class="container proj-cover">
-      <Image src={p.cover.src} alt={p.cover.alt} widths={[720, 1200, 1800]} sizes="(min-width: 76rem) 76rem, 100vw" loading="eager" fetchpriority="high" />
+      <Picture
+        src={p.cover.src}
+        alt={p.cover.alt}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1280, 1800, 2400]}
+        sizes="(min-width: 76rem) 76rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
 
-    <div class="section container-narrow prose">
-      {p.body.map((para) => <p>{para}</p>)}
-      <h2 class="h3">Scope</h2>
-      <ul class="ticks">{p.scope.map((s) => <li>{s}</li>)}</ul>
-    </div>
+    <section class="section container story" aria-labelledby="story-title">
+      <div class="prose story__body">
+        <h2 class="h3" id="story-title">The project</h2>
+        {p.body.map((para) => <p>{para}</p>)}
+      </div>
+      <aside class="scope" aria-labelledby="scope-title">
+        <h2 class="scope__title mono" id="scope-title">Scope of work</h2>
+        <ul class="ticks">{p.scope.map((s) => <li>{s}</li>)}</ul>
+        <a href={`/contact/?service=${p.services[0]}`} class="btn btn--accent" data-track="cta_click" data-track-location={`project_scope_${p.slug}`}>
+          Plan a similar project <Icon name="arrow" />
+        </a>
+      </aside>
+    </section>
 
     {
-      p.gallery.length > 0 && (
-        <section class="container gallery" aria-label="Project photos">
-          {p.gallery.map((g) => (
-            <figure>
-              <Image src={g.src} alt={g.alt} widths={[480, 800, 1200]} sizes="(min-width: 48rem) 50vw, 100vw" loading="lazy" />
-            </figure>
-          ))}
+      p.pairs && p.pairs.length > 0 && (
+        <section class="section-tight tinted" aria-labelledby="pairs-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="eyebrow">Construction to completion</p>
+              <h2 class="h2" id="pairs-title">
+                Before and after
+              </h2>
+            </div>
+            <BeforeAfter pairs={p.pairs} />
+          </div>
         </section>
       )
     }
 
-    <p class="container back">
-      <a href="/projects/" class="link-arrow">All projects <Icon name="arrow" /></a>
-    </p>
+    {
+      p.gallery.length > 0 && (
+        <section class="section" aria-labelledby="gallery-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="eyebrow">Photo gallery</p>
+              <h2 class="h2" id="gallery-title">
+                More from {p.client}
+              </h2>
+            </div>
+            <Gallery photos={p.gallery} label={`${p.title} photos`} group={p.slug} />
+          </div>
+        </section>
+      )
+    }
   </article>
 
-  <CtaBand location={`project_${p.slug}`} heading="Planning something similar?" />
+  <section class="section-tight tinted" aria-labelledby="more-title">
+    <div class="container">
+      <div class="more-head">
+        <h2 class="h3" id="more-title">More projects</h2>
+        <a href="/projects/" class="link-arrow">All projects <Icon name="arrow" /></a>
+      </div>
+      <div class="more-grid">
+        {others.map((o) => <ProjectCard project={o} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand location={`project_${p.slug}`} heading="Planning something similar?" service={p.services[0]} />
+  <Lightbox />
 </Base>
 
 <style>
   .proj-head {
     display: grid;
-    gap: var(--space-5);
-    padding-block: var(--space-7);
+    gap: var(--space-6);
+    padding-block: var(--space-6) var(--space-7);
+  }
+  .proj-head__copy {
+    display: grid;
+    gap: var(--space-4);
   }
   .facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4) var(--space-7);
-    border-top: 1px solid var(--line);
+    display: grid;
+    gap: var(--space-4) var(--space-6);
+    border-top: 2px solid var(--ink);
     padding-top: var(--space-5);
+    margin: 0;
+  }
+  @media (min-width: 48rem) {
+    .facts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 72rem) {
+    .facts {
+      grid-template-columns: 1fr 1fr 1.6fr 1.4fr;
+    }
   }
   .facts dt {
     font-family: var(--font-mono);
@@ -104,29 +201,78 @@ const title = `${p.title} | ${p.sector} Project in ${p.location} | Meridian`;
     color: var(--muted);
   }
   .facts dd {
-    margin: 0;
+    margin: var(--space-1) 0 0;
     font-weight: 600;
   }
-  .proj-cover img {
+  .proj-cover :global(img) {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    background: var(--paper-3);
   }
-  .gallery {
-    display: grid;
-    gap: var(--space-4);
-  }
-  .gallery img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-  @media (min-width: 48rem) {
-    .gallery {
-      grid-template-columns: 1fr 1fr;
+  @media (max-width: 40rem) {
+    .proj-cover {
+      width: 100%;
+    }
+    .proj-cover :global(img) {
+      aspect-ratio: 4 / 3;
     }
   }
-  .back {
-    padding-block: var(--space-8);
+  .story {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .story__body {
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .story__body h2 {
+    color: var(--ink);
+  }
+  .scope {
+    align-self: start;
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--paper-2);
+    border-top: 3px solid var(--accent);
+  }
+  .scope__title {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-stretch: 100%;
+  }
+  .scope .btn {
+    justify-self: start;
+  }
+  @media (min-width: 64rem) {
+    .story {
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-8);
+    }
+    .scope {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+  .more-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+  .more-grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48rem) {
+    .more-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>

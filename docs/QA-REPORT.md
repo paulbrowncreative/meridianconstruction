@@ -1,99 +1,120 @@
 # QA Report
 
-_Run October 2, 2026 against the production build (`npm run build` → `astro preview`) in headless Chromium (Playwright). Every result below was observed directly, not estimated._
+_Final pass on October 13, 2026, run against the production build (`npm run build` → `astro preview`) in headless Chromium (Playwright). Every number below was measured, not estimated. Lighthouse runs were local, without a CDN, so production numbers will differ somewhat._
+
+## Scope of this release
+
+| Area | What's included |
+|---|---|
+| **Brand** | Meridian's real logo mark (recovered from the legacy site) and brand blue `#0A4498` with navy. These replace the placeholder wordmark and vermillion. |
+| **Case studies (4)** | Aqua-Tots Swim Schools, NKD Pizza, Menchie's Frozen Yogurt, and public-sector offices. Each has verified facts, real photos, before/after pairs and a gallery with lightbox. |
+| **New pages** | `/franchise-build-outs/` (landing page), `/resources/` with 2 long-form guides, and `/projects/` rebuilt around the case studies. |
+| **Trust** | A client list taken from the old site ("happy customers"), plus "Where we've built" with 10 Michigan communities. |
+| **Service pages** | Job-site photo galleries for General Contracting and Commercial Carpentry, plus related case studies. |
+| **Site size** | 20 HTML pages, 18 of them indexable. |
 
 ## Build & static checks
 
 | Check | Result |
 |---|---|
 | `astro check` (TypeScript + templates) | 0 errors, 0 warnings, 0 hints |
-| Production build | 12 pages, sitemap generated |
-| Internal links and assets (all `href`/`src` in `dist/`) | 528 checked, **0 broken** |
-| JSON-LD on every page | All blocks parse as valid JSON |
-| One `<h1>` per page | ✅ all 12 |
-| Titles ≤ 60 chars / descriptions ≤ 160 chars (indexable pages) | ✅ |
-| Canonicals | Self-referencing HTTPS `www` URLs; omitted on noindex utility pages |
-| `robots.txt` | Production: allow all + sitemap. Previews (`PUBLIC_NOINDEX=true`): `Disallow: /` and `noindex` meta |
-| Sitemap | 10 indexable URLs; thank-you and 404 excluded |
-| JavaScript shipped | ~2.3 KB site script + 4.1 KB form script on `/contact/` only (uncompressed) |
+| Production build | 20 pages; images output as responsive AVIF + WebP |
+| Internal links, `src` and `srcset` assets | 1,209 checked, **0 broken** |
+| Orphan pages (in sitemap, nothing links to them) | **0** |
+| Titles ≤ 60 chars, descriptions 70–160 chars, unique | ✅ all indexable pages |
+| Exactly one `<h1>` per page; no skipped heading levels | ✅ all 20 pages |
+| Every `<img>` has an `alt` attribute | ✅ (decorative logo uses `alt=""`) |
+| JSON-LD parses on every page | ✅ |
+| Canonical matches URL; noindex utility pages carry no canonical | ✅ |
+| Sitemap | 18 URLs (thank-you and 404 excluded) |
+| Words run together in rendered text (whitespace QA) | 14 instances found and fixed (Astro trims line breaks next to inline links) |
+
+**Structured data:**
+
+| Where | Types |
+|---|---|
+| Every page | `GeneralContractor` (`areaServed`: Michigan), `WebPage` |
+| Home | `WebSite` |
+| Inner pages | `BreadcrumbList` |
+| Service pages | `Service` |
+| Pages with visible FAQs | `FAQPage` |
+| Case studies | `CreativeWork` with `ImageObject` list |
+| Guides | `Article` |
+
+## Accessibility: axe-core 4 (WCAG 2.0/2.1/2.2 A + AA, plus best practices)
+
+Scanned every template at 390 px and 1440 px.
+
+- **Final result: 0 violations.**
+- **Found and fixed:** `label-content-name-mismatch` on the logo link (the accessible name didn't match the visible text).
+- **Found and fixed by the static check:** the logo `<img>` was missing `alt`, because Astro drops an empty alt from `<Image>`. It's now a plain `<img alt="">`.
 
 ## Lighthouse 12.8.2
 
-Run locally against `astro preview`, so there is no CDN. Production numbers will differ.
-
-| Page | Mode | Perf | A11y | Best practices | SEO | LCP | CLS | TBT |
+| Page | Mode | Perf | A11y | BP | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|---|
-| `/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
+| `/` | mobile | 99 | 100 | 100 | 100 | 1.9 s | 0 | 0 ms |
 | `/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
-| `/services/general-contracting/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
-| `/services/general-contracting/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
+| `/projects/` | mobile | 98 | 100 | 100 | 100 | 2.3 s | 0 | 0 ms |
+| `/projects/` | desktop | 100 | 100 | 100 | 100 | 0.5 s | 0 | 0 ms |
+| `/projects/aqua-tots-swim-schools/` | mobile | 99 | 100 | 100 | 100 | 2.0 s | 0 | 0 ms |
+| `/projects/aqua-tots-swim-schools/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
+| `/services/commercial-carpentry/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
+| `/services/commercial-carpentry/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
+| `/franchise-build-outs/` | mobile | 99 | 100 | 100 | 100 | 2.0 s | 0 | 0 ms |
+| `/franchise-build-outs/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
+| `/resources/tenant-improvement-process/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
+| `/resources/tenant-improvement-process/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
 | `/contact/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
 | `/contact/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
-| `/projects/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
-| `/projects/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
-| `/about/` | mobile | 99 | 100 | 100 | 100 | 1.8 s | 0 | 0 ms |
+| `/about/` | mobile | 99 | 100 | 100 | 100 | 1.9 s | 0 | 0 ms |
 | `/about/` | desktop | 100 | 100 | 100 | 100 | 0.4 s | 0 | 0 ms |
-
-Lighthouse's automated accessibility audit covers only part of WCAG 2.2 AA. Manual checks are listed below.
 
 ## Responsive
 
-Every page was checked at **360, 390, 768, 1024, 1440 and 1920 px**:
+All 18 indexable pages were loaded at 360, 390, 768, 1024, 1440 and 1920 px: 108 page loads in total.
 
-- **Horizontal overflow:** 0 px on every page at every width.
-- **Console errors:** none.
-- **Visual review:** home, service, projects, about and contact pages reviewed at mobile, tablet and desktop.
+- **Horizontal overflow:** 0 px in every case.
+- **Console or page errors:** 0.
 
-Issues found during visual review, all fixed:
+Visual review covered home, case study, projects, franchise, guide, contact and the header at 1024, 1216, 1232, 1280 and 1440 px. Issues found and fixed:
 
-- Icons inside child components ignored their scoped size rules, which made one arrow render oversized. Fixed with a global `.icon` default and `:global(svg)` overrides.
-- The `[hidden]` attribute was overridden by `display: grid`, so the error summary and field errors showed early. Fixed with a global `[hidden]` rule.
-- The phone number wrapped in the header, footer and contact aside. Fixed with `nowrap`.
-- A missing space in "MI 48393" (JSX whitespace) and in "with us —". Fixed.
-- The mobile menu button showed both the open and close icons. Fixed.
-- Uneven vertical spacing in grid items with titles of different lengths. Fixed with `align-content: start`.
-- The delivery comparison numbering was out of order. Fixed.
+- **Header wrapping.** At 1024–1440 px the "Our Work" link and the CTA wrapped, and the logo subtitle collided with the nav at 1024 px. Fixed with `nowrap`, tighter nav padding below 80 rem, and hiding Resources between 64 and 76 rem (it stays in the footer and mobile menu).
+- **Mobile hero.** The decorative plan drawing pushed real content below the fold on phones, so it's now hidden under 40 rem.
+- **Mobile client list.** It was very tall, so its type size is reduced under 48 rem.
+- **Article contents and Related lists.** The list markers were misaligned.
+- **Article sidebar CTA.** The button text wrapped.
 
-## Functional tests (automated in Playwright)
+## Functional tests (automated, Playwright): 20 of 20 pass
 
 | Test | Result |
 |---|---|
-| Skip link is first Tab stop | ✅ |
-| Services dropdown: keyboard open (Enter), Tab into items, Esc closes and returns focus | ✅ |
-| Mobile menu: opens, `aria-expanded` updates, focus moves to first link, Esc closes and returns focus to toggle | ✅ |
-| FAQ accordions (`<details>`) open on click and keyboard | ✅ |
-| `/contact/?service=design-build` preselects Design/Build | ✅ |
-| Empty submit → error summary shown and focused, five specific messages, `aria-invalid` + `aria-describedby` set | ✅ |
-| Invalid email / short phone → specific correction messages | ✅ |
-| Submit when the endpoint fails (local server rejects POST) → error state with phone number; entered data retained | ✅ |
-| Submit when the endpoint returns 200 (simulated Netlify) → multipart POST sent, success message shown and focused, form hidden | ✅ |
+| Lightbox opens; full-size image loads (>1000 px) | ✅ |
+| Arrow keys page through; counter updates; Esc closes; focus returns to the gallery link | ✅ |
+| Services dropdown: mouse hover then click keeps it open; second click closes; Enter opens; Esc closes | ✅ *(hover-then-click bug found and fixed)* |
+| Dropdown and mobile menu include Franchise Build-Outs and Resources | ✅ |
+| Skip link is the first Tab stop | ✅ |
+| Mobile menu opens and closes (Esc) | ✅ |
+| `?service=commercial-carpentry` preselects the service; "Public sector" appears in Type of space | ✅ |
+| Empty submit shows the error summary; valid submit sends a multipart POST with `form-name=estimate`; success state shown | ✅ |
+| No page errors | ✅ |
 
-**Not testable here:** a real Netlify Forms submission and the email notification. Both need the site deployed on Netlify with form detection enabled. After the first deploy, submit one test lead with an attachment and confirm it arrives.
+**Not testable here:**
 
-## Accessibility (manual)
+- A real Netlify Forms submission and its email notification. Both need the live deploy (see README → Deployment).
+- Search rankings. No one can guarantee or test rankings; the site gives Google everything it rewards, and the rest depends on time, reviews, links and the Google Business Profile.
 
-- Semantic landmarks: header, nav (Main / Mobile / Breadcrumb / footer navs labelled), main, footer.
-- Heading order is sequential. Section headings are linked via `aria-labelledby`.
-- Focus indicator: a 3 px vermillion outline, visible on paper and night backgrounds.
-- Every text and background pair used meets 4.5:1. The smallest is accent on paper at 5.05:1.
-- Tap targets are at least 44 px for nav, buttons, form controls and footer links. Breadcrumbs are at least 24 px.
-- Form fields:
-  - every field has a visible `<label>`;
-  - required and optional are marked in text, not by colour alone;
-  - hints are linked with `aria-describedby`;
-  - inputs use 16 px+ text to avoid iOS zoom.
-- `prefers-reduced-motion` disables the plan-drawing animation, reveals and smooth scroll.
-- The decorative floor-plan SVG is `aria-hidden` and captioned "illustrative".
+## Known limitations / next steps (highest impact first)
 
-## Known limitations / recommended next steps
-
-1. **Real project photography and case studies.** This is the single biggest conversion gain. The portfolio infrastructure is ready.
-2. **Real Google reviews or testimonials**, shown near the CTAs.
-3. **Confirm the old gallery URL** and finalise `_redirects`.
-4. **Logo file**, plus email, hours and license in `site.ts`.
-5. **Claim and align the Google Business Profile**, then add it to `sameAs`.
-6. **Analytics with consent** (see README).
-7. **Content:** once real project data exists, consider:
-   - a service-area page backed by actual local projects;
-   - articles answering buyer questions, e.g. "What does a tenant improvement cost per square foot in Oakland County?" and "Landlord vs. tenant TI responsibilities".
-8. **Copy review by the client.** The commitments on the home and About pages restate the original site's promises (on time, on budget, quality, worker safety) in more detail, and the owner should approve the wording.
+1. **Google Business Profile.**
+   - Claim or verify it.
+   - Match the name, address and phone exactly.
+   - Add the case-study photos.
+   - Add the profile URL to `site.sameAs`.
+   - Ask repeat clients for reviews. For local "contractor near me" searches, this outweighs anything on the site.
+2. **Original photos and vector logo.** The site uses AI-upscaled 2016-era images. Camera originals and a vector logo would be a visible upgrade.
+3. **Client permission.** Confirm the client list and case studies are still OK to publish. The old site published them, but relationships change.
+4. **Real testimonials** from Aqua-Tots, NKD or Menchie's owners, placed next to the CTAs.
+5. **Content cadence.** One useful guide per month, for example "landlord vs. tenant TI responsibilities", "restaurant build-out permits in Michigan" or "what a GC needs to price your drawings". Topical authority compounds.
+6. **Analytics with consent.** Add GA4 through GTM; the events are already wired (see README).
+7. **Business details.** Fill in `site.ts` (email, hours, license, insurance) so they appear in the footer, the contact page and the structured data.

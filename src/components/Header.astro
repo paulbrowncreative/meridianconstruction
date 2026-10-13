@@ -8,6 +8,7 @@ const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 const links = [
   { href: '/projects/', label: 'Our Work' },
+  { href: '/resources/', label: 'Resources', wide: true },
   { href: '/about/', label: 'About' },
   { href: '/contact/', label: 'Contact' },
 ];
@@ -15,7 +16,7 @@ const links = [
 
 <header class="site-header" data-header>
   <div class="container site-header__bar">
-    <a href="/" class="site-header__logo" aria-label={`${site.name} — home`}>
+    <a href="/" class="site-header__logo">
       <Logo />
     </a>
 
@@ -50,11 +51,21 @@ const links = [
                 </li>
               ))
             }
+            <li class="dropdown__sep">
+              <a
+                href="/franchise-build-outs/"
+                class="dropdown__link"
+                aria-current={path === '/franchise-build-outs/' ? 'page' : undefined}
+              >
+                <span class="mono dropdown__num">→</span>
+                <span>Franchise Build-Outs</span>
+              </a>
+            </li>
           </ul>
         </li>
         {
           links.map((l) => (
-            <li class="nav__item">
+            <li class:list={['nav__item', l.wide && 'nav__item--wide']}>
               <a href={l.href} class="nav__link" aria-current={isActive(l.href) ? 'page' : undefined}>
                 {l.label}
               </a>
@@ -101,6 +112,12 @@ const links = [
             </li>
           ))
         }
+        <li>
+          <a href="/franchise-build-outs/" aria-current={path === '/franchise-build-outs/' ? 'page' : undefined}>
+            <span class="mono">→</span>
+            Franchise Build-Outs
+          </a>
+        </li>
         <li>
           <a href="/services/" class="mobile-menu__all">All services <Icon name="arrow" /></a>
         </li>
@@ -149,10 +166,11 @@ const links = [
   .site-header__bar {
     display: flex;
     align-items: center;
-    gap: var(--space-5);
+    gap: var(--space-4);
     height: var(--header-h);
   }
   .site-header__logo {
+    flex-shrink: 0;
     text-decoration: none;
     margin-right: auto;
     display: inline-flex;
@@ -177,7 +195,8 @@ const links = [
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
-    padding-inline: 0.8rem;
+    padding-inline: 0.55rem;
+    white-space: nowrap;
     font-weight: 600;
     text-decoration: none;
     position: relative;
@@ -188,8 +207,8 @@ const links = [
   .nav__link::after {
     content: '';
     position: absolute;
-    left: 0.8rem;
-    right: 0.8rem;
+    left: 0.55rem;
+    right: 0.55rem;
     bottom: 0.45rem;
     height: 2px;
     background: var(--accent);
@@ -248,6 +267,11 @@ const links = [
   .dropdown__link:hover,
   .dropdown__link[aria-current='page'] {
     background: var(--paper-2);
+  }
+  .dropdown__sep {
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--line);
   }
   .dropdown__num {
     color: var(--accent);
@@ -359,6 +383,7 @@ const links = [
   @media (min-width: 40rem) {
     .site-header__cta {
       display: inline-flex;
+      white-space: nowrap;
       min-height: 2.75rem;
       padding-block: 0.6rem;
     }
@@ -387,6 +412,27 @@ const links = [
     }
     .site-header__phone {
       padding-inline: var(--space-3);
+    }
+  }
+</style>
+
+<style>
+  /* Keep the bar on one line at laptop widths; Resources stays in the footer. */
+  @media (min-width: 64rem) and (max-width: 75.99rem) {
+    .nav__item--wide {
+      display: none;
+    }
+  }
+  @media (min-width: 80rem) {
+    .nav__link {
+      padding-inline: 0.8rem;
+    }
+    .nav__link::after {
+      left: 0.8rem;
+      right: 0.8rem;
+    }
+    .nav__item--has-menu .nav__link::after {
+      right: 0.15rem;
     }
   }
 </style>

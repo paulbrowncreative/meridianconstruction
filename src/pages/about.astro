@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Steps from '../components/Steps.astro';
 import CtaBand from '../components/CtaBand.astro';
+import ClientList from '../components/ClientList.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../data/site';
 import { services } from '../data/services';
@@ -73,6 +74,10 @@ const approach = [
           Meridian builds and remodels commercial interiors: retail stores, offices, medical facilities, food
           establishments and recreational facilities. Our work centers on interior build-outs and tenant
           improvements, where landlords and tenants need a space delivered to a specific date for a specific price.
+          Franchise brands such as <a href="/projects/aqua-tots-swim-schools/">Aqua-Tots Swim Schools</a>,{' '}
+          <a href="/projects/nkd-pizza/">NKD Pizza</a> and <a href="/projects/menchies-frozen-yogurt/">Menchie’s</a>{' '}
+          have come back to us for location after location, and we have built{' '}
+          <a href="/projects/public-sector-offices/">offices for public agencies</a> across Michigan.
         </p>
         <p>
           We offer four ways to work with us —{' '}
@@ -90,6 +95,8 @@ const approach = [
       </div>
     </div>
   </section>
+
+  <ClientList heading="A few of our repeat customers" />
 
   <section class="section on-night" aria-labelledby="principles-title">
     <div class="container">

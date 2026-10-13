@@ -1,0 +1,99 @@
+---
+/**
+ * Responsive photo grid. Each tile links to a large version of the photo, so
+ * it works without JavaScript; with JS, the shared <Lightbox> opens instead.
+ */
+import { Picture, getImage } from 'astro:assets';
+import type { Photo } from '../data/projects';
+
+interface Props {
+  photos: Photo[];
+  label: string;
+  /** Group name so the lightbox can page through this gallery only. */
+  group: string;
+}
+const { photos, label, group } = Astro.props;
+const items = await Promise.all(
+  photos.map(async (p) => ({ ...p, large: await getImage({ src: p.src, width: 1800, format: 'webp' }) })),
+);
+---
+
+<ul class="gallery" role="list" aria-label={label}>
+  {
+    items.map((p) => (
+      <li class:list={['gallery__item', p.src.height > p.src.width && 'gallery__item--tall']}>
+        <a href={p.large.src} class="gallery__link" data-lightbox={group} data-caption={p.alt}>
+          <Picture
+            src={p.src}
+            alt={p.alt}
+            formats={['avif', 'webp']}
+            widths={[400, 640, 960]}
+            sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw"
+            loading="lazy"
+          />
+          <span class="gallery__zoom" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+            </svg>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    grid-auto-flow: dense;
+    gap: var(--space-3);
+  }
+  .gallery__item {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  @media (min-width: 40rem) {
+    .gallery__item--tall {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+  }
+  .gallery__link {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .gallery__link :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease);
+  }
+  .gallery__link:hover :global(img) {
+    transform: scale(1.03);
+  }
+  .gallery__link:focus-visible {
+    outline-offset: -3px;
+  }
+  .gallery__zoom {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: rgb(11 30 54 / 0.8);
+    color: #fff;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .gallery__link:hover .gallery__zoom,
+  .gallery__link:focus-visible .gallery__zoom {
+    opacity: 1;
+  }
+</style>

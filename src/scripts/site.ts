@@ -60,14 +60,25 @@ document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((item) => {
   const list = item.querySelector<HTMLElement>('[data-dropdown-menu]');
   if (!toggle || !list) return;
   let closeTimer: number | undefined;
+  // A mouse user's click usually lands right after hover has opened the menu;
+  // treat that click as "keep it open" rather than toggling it shut.
+  let openedByHover = false;
 
   const set = (open: boolean) => {
     window.clearTimeout(closeTimer);
     toggle.setAttribute('aria-expanded', String(open));
     list.hidden = !open;
+    if (!open) openedByHover = false;
   };
 
-  toggle.addEventListener('click', () => set(toggle.getAttribute('aria-expanded') !== 'true'));
+  toggle.addEventListener('click', () => {
+    if (openedByHover) {
+      openedByHover = false;
+      set(true);
+      return;
+    }
+    set(toggle.getAttribute('aria-expanded') !== 'true');
+  });
   item.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !list.hidden) {
       set(false);
@@ -79,7 +90,10 @@ document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((item) => {
   });
   // Hover-to-open only for precise pointers; touch uses the toggle button.
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    item.addEventListener('mouseenter', () => set(true));
+    item.addEventListener('mouseenter', () => {
+      if (list.hidden) openedByHover = true;
+      set(true);
+    });
     item.addEventListener('mouseleave', () => {
       closeTimer = window.setTimeout(() => set(false), 160);
     });

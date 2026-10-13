@@ -7,6 +7,24 @@ import CtaBand from '../../components/CtaBand.astro';
 import { services, getService, type Service } from '../../data/services';
 import { site } from '../../data/site';
 import { serviceSchema, faqSchema } from '../../data/schema';
+import Gallery from '../../components/Gallery.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects, type Photo } from '../../data/projects';
+import cStudExterior from '../../assets/legacy/carpentry/steel-stud-exterior-framing.jpg';
+import cPartitions from '../../assets/legacy/carpentry/interior-steel-stud-partitions.jpg';
+import cRestroom from '../../assets/legacy/carpentry/restroom-framing-blocking.jpg';
+import cSoffitTaped from '../../assets/legacy/carpentry/curved-drywall-soffit-taped.jpg';
+import cGrid from '../../assets/legacy/carpentry/acoustical-ceiling-grid-install.jpg';
+import cCurvedWall from '../../assets/legacy/carpentry/curved-wall-framing-sheathing.jpg';
+import cDoorOpenings from '../../assets/legacy/carpentry/door-opening-framing.jpg';
+import cDrywall from '../../assets/legacy/carpentry/drywall-taped-open-space.jpg';
+import gcAquaAfter from '../../assets/legacy/aqua-tots/aqua-tots-exterior-after-renovation.jpg';
+import gcNkd from '../../assets/legacy/nkd-pizza/nkd-pizza-order-counter.jpg';
+import gcPublic from '../../assets/legacy/public-sector/public-office-transaction-window.jpg';
+import gcMenchies from '../../assets/legacy/menchies/menchies-storefront-exterior.jpg';
+import gcPool from '../../assets/legacy/aqua-tots/aqua-tots-pool-completed.jpg';
+import gcRestroom from '../../assets/legacy/public-sector/public-office-restroom-partition.jpg';
 
 export function getStaticPaths() {
   return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
@@ -17,6 +35,31 @@ interface Props {
 }
 const { service: s } = Astro.props;
 const related = s.related.map(getService);
+const relatedProjects = projects.filter((p) => p.services.includes(s.slug));
+
+// Photos from Meridian's own job sites, per service (none are claimed for
+// design/build or CM because the old site didn't attribute projects to them).
+const jobPhotos: Record<string, Photo[]> = {
+  'commercial-carpentry': [
+    { src: cStudExterior, alt: 'Light-gauge steel exterior wall framing on a new retail building' },
+    { src: cPartitions, alt: 'Interior steel-stud partitions framed inside a building shell' },
+    { src: cDoorOpenings, alt: 'Steel-stud partitions with framed door openings' },
+    { src: cRestroom, alt: 'Restroom wall framing with blocking and rough plumbing' },
+    { src: cCurvedWall, alt: 'Curved wall framing with wood sheathing' },
+    { src: cSoffitTaped, alt: 'Curved drywall soffit taped and finished' },
+    { src: cDrywall, alt: 'Tenant space with drywall finished and ceiling grid in progress' },
+    { src: cGrid, alt: 'Acoustical ceiling grid being installed above finished drywall' },
+  ],
+  'general-contracting': [
+    { src: gcAquaAfter, alt: 'Completed Aqua-Tots Swim School storefront' },
+    { src: gcNkd, alt: 'NKD Pizza order counter with menu boards' },
+    { src: gcPublic, alt: 'Public service transaction window with glazing and wood counter' },
+    { src: gcPool, alt: 'Completed swim school pool with lane lines' },
+    { src: gcMenchies, alt: 'Menchie’s Frozen Yogurt storefront' },
+    { src: gcRestroom, alt: 'Accessible restroom with toilet partition and grab bar' },
+  ],
+};
+const photos = jobPhotos[s.slug] ?? [];
 
 // MasterFormat references for the carpentry scope — useful shorthand for the
 // architects, owners' reps and GCs who write and read specs.
@@ -127,6 +170,22 @@ const carpentrySpec = [
     </div>
   </section>
 
+  {
+    photos.length > 0 && (
+      <section class="section" aria-labelledby="photos-title">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">From our job sites</p>
+            <h2 class="h2" id="photos-title">
+              {s.slug === 'commercial-carpentry' ? 'Meridian carpentry, in progress' : 'Spaces we’ve delivered'}
+            </h2>
+          </div>
+          <Gallery photos={photos} label={`${s.name} project photos`} group={`svc-${s.slug}`} />
+        </div>
+      </section>
+    )
+  }
+
   <section class="section on-night" aria-labelledby="steps-title">
     <div class="container">
       <div class="section-head">
@@ -136,6 +195,23 @@ const carpentrySpec = [
       <Steps steps={s.steps} />
     </div>
   </section>
+
+  {
+    relatedProjects.length > 0 && (
+      <section class="section-tight tinted" aria-labelledby="svc-projects-title">
+        <div class="container">
+          <h2 class="h3 related__title" id="svc-projects-title">
+            {s.name} case studies
+          </h2>
+          <div class="svc-projects">
+            {relatedProjects.map((p) => (
+              <ProjectCard project={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <FaqList faqs={s.faqs} heading={`${s.name} questions`} />
 
@@ -169,6 +245,7 @@ const carpentrySpec = [
         : `Upload plans or describe the scope, and we will follow up about ${s.name.toLowerCase()} for your project.`
     }
   />
+  {photos.length > 0 && <Lightbox />}
 </Base>
 
 <style>
@@ -293,6 +370,20 @@ const carpentrySpec = [
     width: 7rem;
   }
 
+  .svc-projects {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48rem) {
+    .svc-projects {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 72rem) {
+    .svc-projects {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
   .related__title {
     margin-bottom: var(--space-5);
   }

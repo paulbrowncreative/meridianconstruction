@@ -1,0 +1,136 @@
+---
+/** One modal viewer per page for every [data-lightbox] link (native <dialog>). */
+---
+
+<dialog class="lightbox" aria-label="Photo viewer" data-lightbox-dialog>
+  <div class="lightbox__frame">
+    <img class="lightbox__img" alt="" data-lb-img />
+    <div class="lightbox__bar">
+      <p class="lightbox__caption" data-lb-caption></p>
+      <p class="lightbox__count mono" data-lb-count aria-live="polite"></p>
+      <div class="lightbox__controls">
+        <button type="button" class="lightbox__btn" data-lb-prev aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" /></svg>
+        </button>
+        <button type="button" class="lightbox__btn" data-lb-next aria-label="Next photo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" /></svg>
+        </button>
+        <button type="button" class="lightbox__btn" data-lb-close aria-label="Close photo viewer">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]'));
+  if (dialog && links.length && typeof dialog.showModal === 'function') {
+    const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-lb-count]')!;
+    let group: HTMLAnchorElement[] = [];
+    let index = 0;
+
+    const show = (i: number) => {
+      index = (i + group.length) % group.length;
+      const link = group[index];
+      img.src = link.href;
+      img.alt = link.dataset.caption ?? '';
+      caption.textContent = link.dataset.caption ?? '';
+      count.textContent = `${index + 1} / ${group.length}`;
+    };
+
+    links.forEach((link) =>
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        group = links.filter((l) => l.dataset.lightbox === link.dataset.lightbox);
+        show(group.indexOf(link));
+        dialog.showModal();
+      }),
+    );
+    dialog.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lb-next]')!.addEventListener('click', () => show(index + 1));
+    dialog.querySelector('[data-lb-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    // Click on the backdrop closes.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => img.removeAttribute('src'));
+  }
+</script>
+
+<style>
+  .lightbox {
+    width: min(100vw - 2rem, 80rem);
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 0;
+    background: var(--night);
+    color: var(--on-night);
+  }
+  .lightbox::backdrop {
+    background: rgb(5 12 24 / 0.88);
+  }
+  .lightbox__frame {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    max-height: calc(100dvh - 2rem);
+  }
+  .lightbox__img {
+    width: 100%;
+    height: 100%;
+    max-height: calc(100dvh - 7rem);
+    object-fit: contain;
+    background: #050c18;
+  }
+  .lightbox__bar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+  }
+  .lightbox__caption {
+    font-size: var(--step--1);
+  }
+  .lightbox__count {
+    font-size: 0.75rem;
+    color: var(--on-night-muted);
+  }
+  .lightbox__controls {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .lightbox__btn {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--night-line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--on-night);
+    cursor: pointer;
+  }
+  .lightbox__btn:hover {
+    background: var(--night-2);
+  }
+  .lightbox__btn:focus-visible {
+    outline: 3px solid var(--accent-on-night);
+    outline-offset: 2px;
+  }
+  @media (max-width: 40rem) {
+    .lightbox__bar {
+      grid-template-columns: 1fr auto;
+    }
+    .lightbox__caption {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

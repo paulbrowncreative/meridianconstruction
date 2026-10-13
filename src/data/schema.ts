@@ -28,6 +28,8 @@ export const organizationSchema = () => ({
     addressCountry: site.address.country,
   },
   hasMap: site.directionsUrl,
+  // Documented projects span Michigan (see src/data/projects.ts).
+  areaServed: { '@type': 'State', name: 'Michigan' },
   ...(site.sameAs.length && { sameAs: site.sameAs }),
   knowsAbout: [
     'Tenant improvements',
@@ -36,6 +38,7 @@ export const organizationSchema = () => ({
     'Design-build construction',
     'Construction management',
     'Value engineering',
+    'Franchise build-outs',
   ],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
@@ -64,7 +67,7 @@ export const serviceSchema = (s: Service) => ({
   description: s.metaDescription,
   url: `${site.url}/services/${s.slug}/`,
   provider: { '@id': ORG_ID },
-  // The office location — not a claimed service radius.
+  areaServed: { '@type': 'State', name: 'Michigan' },
   availableChannel: {
     '@type': 'ServiceChannel',
     servicePhone: { '@type': 'ContactPoint', telephone: site.phone.e164, contactType: 'sales' },

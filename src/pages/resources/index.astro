@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+
+const guides = [
+  {
+    href: '/resources/tenant-improvement-process/',
+    title: 'The Commercial Tenant Improvement Process, Step by Step',
+    text: 'Lease terms, delivery methods, design, pricing, permits, construction and closeout — what happens between signing a lease and opening the doors.',
+    minutes: 8,
+  },
+  {
+    href: '/resources/franchise-build-out-checklist/',
+    title: 'Franchise Build-Out Checklist: From Signed Lease to Opening Day',
+    text: 'What franchisees should line up, in order, so the build-out doesn’t become the reason opening day slips.',
+    minutes: 7,
+  },
+];
+---
+
+<Base
+  title="Commercial Construction Guides | Meridian Construction"
+  description="Practical guides for tenants, landlords and franchisees planning a commercial build-out in Michigan, from the team at Meridian Construction Companies."
+  crumbs={[{ name: 'Resources', href: '/resources/' }]}
+  pageType="CollectionPage"
+>
+  <PageHero
+    eyebrow="Resources"
+    title="Guides for planning a commercial build-out"
+    lede="Straight answers to the questions tenants, landlords and franchisees ask before they build — written by the people who build it."
+  />
+  <section class="section">
+    <div class="container">
+      <ul class="guides" role="list">
+        {
+          guides.map((g) => (
+            <li>
+              <a href={g.href} class="guide">
+                <span class="mono guide__meta">Guide · {g.minutes} min read</span>
+                <h2 class="h3 guide__title">{g.title}</h2>
+                <p class="guide__text">{g.text}</p>
+                <span class="link-arrow guide__more" aria-hidden="true">
+                  Read the guide <Icon name="arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+  <CtaBand location="resources" />
+</Base>
+
+<style>
+  .guides {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 56rem) {
+    .guides {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .guide {
+    display: grid;
+    gap: var(--space-4);
+    height: 100%;
+    align-content: start;
+    padding: var(--space-6);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    background: var(--paper);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .guide:hover {
+    border-color: var(--ink);
+    box-shadow: var(--shadow-1);
+  }
+  .guide:hover .guide__title {
+    color: var(--accent);
+  }
+  .guide__meta {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .guide__text {
+    color: var(--ink-2);
+  }
+  .guide__more {
+    justify-self: start;
+  }
+</style>

@@ -1,6 +1,6 @@
 /* ==========================================================================
    Meridian Construction — design system
-   Drafting-table palette (paper, graphite, survey vermillion), a single
+   Drafting-table palette (paper, graphite, Meridian brand blue and navy), a single
    variable grotesque (Archivo, width axis for display) and a mono for
    spec-sheet labels. Every colour pair used for text meets WCAG 2.2 AA.
    ========================================================================== */
@@ -43,15 +43,15 @@
   --muted: #5b6068;
   --line: #cfc8b8;
   --line-strong: #a79f8c;
-  --accent: #b83a12; /* survey vermillion — 5.05:1 on paper */
-  --accent-hover: #9c300e;
-  --accent-soft: #f6dfd3;
-  --night: #15171a;
-  --night-2: #1e2125;
-  --night-line: #33373d;
+  --accent: #0a4498; /* Meridian brand blue (from logo) — 8.0:1 on paper */
+  --accent-hover: #083677;
+  --accent-soft: #d9e3f3;
+  --night: #0b1e36; /* brand navy */
+  --night-2: #12294a;
+  --night-line: #26405f;
   --on-night: #f3f0e8;
-  --on-night-muted: #a9adb3;
-  --accent-on-night: #f26a3d; /* 5.9:1 on night */
+  --on-night-muted: #b4bfce;
+  --accent-on-night: #9cbdf2; /* 8.8:1 on night */
   --success: #2f6b3a;
   --error: #a3240f;
 
@@ -407,7 +407,7 @@ a.inline:hover {
   max-width: 40em;
 }
 
-/* Tick list — square vermillion markers, like plan callouts */
+/* Tick list — square blue markers, like plan callouts */
 .ticks {
   list-style: none;
   padding: 0;

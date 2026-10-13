@@ -1,0 +1,232 @@
+---
+/** Long-form guide layout: Article schema, reading width, sticky contents, CTA. */
+import Base from './Base.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  seoTitle: string;
+  description: string;
+  slug: string;
+  published: string; // ISO date
+  updated?: string;
+  readMinutes: number;
+  toc: { id: string; label: string }[];
+  related: { href: string; label: string }[];
+  ctaService?: string;
+}
+const { title, seoTitle, description, slug, published, updated, readMinutes, toc, related, ctaService } = Astro.props;
+const url = `${site.url}/resources/${slug}/`;
+const fmt = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+
+<Base
+  title={seoTitle}
+  description={description}
+  ogType="article"
+  crumbs={[
+    { name: 'Resources', href: '/resources/' },
+    { name: title, href: `/resources/${slug}/` },
+  ]}
+  schema={[
+    {
+      '@type': 'Article',
+      '@id': `${url}#article`,
+      headline: title,
+      description,
+      url,
+      mainEntityOfPage: { '@id': `${url}#webpage` },
+      datePublished: published,
+      dateModified: updated ?? published,
+      author: { '@id': `${site.url}/#organization` },
+      publisher: { '@id': `${site.url}/#organization` },
+      image: `${site.url}/og-default.png`,
+      inLanguage: 'en-US',
+    },
+  ]}
+>
+  <article class="article">
+    <header class="container article__head">
+      <p class="eyebrow">Guide</p>
+      <h1 class="h1">{title}</h1>
+      <p class="lede">{description}</p>
+      <p class="article__meta mono">
+        <span>By {site.name}</span>
+        <span><time datetime={updated ?? published}>{updated ? `Updated ${fmt(updated)}` : fmt(published)}</time></span>
+        <span>{readMinutes} min read</span>
+      </p>
+    </header>
+
+    <div class="container article__grid">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 class="toc__title mono" id="toc-title">On this page</h2>
+        <ol>
+          {toc.map((t) => <li><a href={`#${t.id}`}>{t.label}</a></li>)}
+        </ol>
+      </nav>
+      <div class="prose article__body">
+        <slot />
+      </div>
+      <aside class="article__aside" aria-label="Related">
+        <div class="aside-cta">
+          <p class="mono aside-cta__label">Talk to a builder</p>
+          <p>Have a space in mind? We’ll review your plans and tell you how we’d build it.</p>
+          <a href={ctaService ? `/contact/?service=${ctaService}` : '/contact/'} class="btn btn--accent" data-track="cta_click" data-track-location={`article_${slug}`}>
+            Request an Estimate <Icon name="arrow" />
+          </a>
+          <a href={site.phone.href} class="aside-cta__phone" data-track="click_to_call" data-track-location={`article_${slug}`}>
+            {site.phone.display}
+          </a>
+        </div>
+        <div class="related">
+          <p class="mono aside-cta__label">Related</p>
+          <ul>
+            {related.map((r) => <li><a href={r.href}>{r.label}</a></li>)}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  <CtaBand location={`article_${slug}`} service={ctaService} />
+</Base>
+
+<style>
+  .article__head {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-6) var(--space-7);
+    border-bottom: 1px solid var(--line);
+  }
+  .article__head h1 {
+    max-width: 24ch;
+  }
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .article__grid {
+    display: grid;
+    gap: var(--space-7);
+    padding-block: var(--space-8) var(--section);
+  }
+  .toc {
+    padding: var(--space-5);
+    background: var(--paper-2);
+    border-top: 3px solid var(--accent);
+    align-self: start;
+  }
+  .toc__title,
+  .aside-cta__label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-stretch: 100%;
+    color: var(--muted);
+    margin-bottom: var(--space-3);
+  }
+  .toc ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+  }
+  .toc a {
+    text-decoration: none;
+    display: block;
+    padding-block: 0.15rem;
+    line-height: 1.35;
+  }
+  .toc a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .article__body {
+    font-size: var(--step-0);
+    line-height: 1.7;
+    max-width: 42rem;
+  }
+  .article__body :global(h2) {
+    font-size: var(--step-3);
+    margin-top: 2em;
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .article__body :global(h3) {
+    font-size: var(--step-1);
+    margin-top: 1.6em;
+  }
+  .article__body :global(ul),
+  .article__body :global(ol) {
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.5em;
+  }
+  .article__body :global(.callout) {
+    padding: var(--space-5);
+    border-left: 4px solid var(--accent);
+    background: var(--paper-2);
+  }
+  .article__aside {
+    display: grid;
+    gap: var(--space-5);
+    align-self: start;
+  }
+  .aside-cta {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--night);
+    color: var(--on-night);
+  }
+  .aside-cta .aside-cta__label {
+    color: var(--accent-on-night);
+  }
+  .aside-cta .btn {
+    width: 100%;
+    white-space: nowrap;
+  }
+  .aside-cta__phone {
+    font-weight: 700;
+    text-decoration: none;
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+  }
+  .aside-cta :focus-visible {
+    outline-color: var(--accent-on-night);
+  }
+  .related ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .related a {
+    color: var(--accent);
+    display: block;
+    padding-block: 0.15rem;
+    line-height: 1.35;
+  }
+  @media (min-width: 72rem) {
+    .article__grid {
+      grid-template-columns: 14rem minmax(0, 42rem) 16rem;
+      justify-content: space-between;
+    }
+    .toc,
+    .article__aside {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+</style>

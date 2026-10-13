@@ -1,0 +1,90 @@
+---
+/** Side-by-side construction → finished pairs from the same project. */
+import { Picture } from 'astro:assets';
+import type { Photo } from '../data/projects';
+
+interface Props {
+  pairs: { before: Photo; after: Photo; caption: string }[];
+}
+const { pairs } = Astro.props;
+---
+
+<div class="pairs">
+  {
+    pairs.map((pair) => (
+      <figure class="pair" data-reveal>
+        <div class="pair__grid">
+          {[
+            { photo: pair.before, label: 'Before' },
+            { photo: pair.after, label: 'After' },
+          ].map(({ photo, label }) => (
+            <div class="pair__cell">
+              <Picture
+                src={photo.src}
+                alt={photo.alt}
+                formats={['avif', 'webp']}
+                widths={[400, 640, 960]}
+                sizes="(min-width: 64rem) 36rem, 50vw"
+                loading="lazy"
+              />
+              <span class="pair__label mono" aria-hidden="true">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+        <figcaption class="pair__caption">{pair.caption}</figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .pairs {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 72rem) {
+    .pairs {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-7) var(--space-6);
+    }
+  }
+  .pair__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    background: var(--ink);
+    border: 3px solid var(--ink);
+  }
+  .pair__cell {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  .pair__cell :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pair__label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.3rem 0.6rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pair__cell + .pair__cell .pair__label {
+    background: var(--accent);
+    color: #fff;
+  }
+  .pair__caption {
+    margin-top: var(--space-3);
+    font-weight: 650;
+  }
+</style>

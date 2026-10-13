@@ -7,14 +7,15 @@ import Steps from '../components/Steps.astro';
 import FaqList from '../components/FaqList.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { site, nearbyCommunities } from '../data/site';
+import { site } from '../data/site';
 import { services } from '../data/services';
-import { projects } from '../data/projects';
+import { projects, projectCities } from '../data/projects';
+import ClientList from '../components/ClientList.astro';
 import { faqSchema } from '../data/schema';
 
 const title = 'Commercial General Contractor in Wixom, MI | Meridian';
 const description =
-  'Tenant improvements, commercial carpentry, design/build and construction management in southeast Michigan — built to the drawings, on time and on budget.';
+  'Wixom-based commercial contractor for tenant improvements, franchise build-outs, carpentry, design/build and construction management across Michigan.';
 
 const commitments = [
   {
@@ -65,7 +66,11 @@ const homeFaqs = [
   },
   {
     q: 'Where is Meridian Construction located?',
-    a: `Our office is at ${site.address.street} in ${site.address.city}, ${site.address.regionName}, in ${site.address.county}. Call ${site.phone.display} to confirm whether your project location is one we can take on.`,
+    a: `Our office is at ${site.address.street} in ${site.address.city}, ${site.address.regionName}, in ${site.address.county}. We have built projects in ${projectCities.map((c) => c.replace(', MI', '')).join(', ')}. Call ${site.phone.display} to confirm we can take on a project at your site.`,
+  },
+  {
+    q: 'Do you build franchise locations?',
+    a: 'Yes. Franchise brands including Aqua-Tots Swim Schools, NKD Pizza and Menchie’s Frozen Yogurt have used Meridian as general contractor for multiple Michigan locations, building each one to the brand’s standards.',
   },
   {
     q: 'How do I get an estimate?',
@@ -84,9 +89,9 @@ const homeFaqs = [
           Commercial interiors built <em>to the drawings</em> — on time and on budget.
         </h1>
         <p class="lede">
-          {site.name} delivers tenant improvements and interior build-outs for retail, office, medical, food service
-          and recreational spaces — through general contracting, commercial carpentry, design/build or construction
-          management.
+          {site.name} delivers tenant improvements, interior build-outs and franchise locations across Michigan —
+          retail, office, medical, food service, recreational and public-sector spaces — through general contracting,
+          commercial carpentry, design/build or construction management.
         </p>
         <div class="btn-row">
           <a href="/contact/" class="btn btn--accent" data-track="cta_click" data-track-location="hero">
@@ -122,6 +127,8 @@ const homeFaqs = [
     </dl>
   </section>
 
+  <ClientList />
+
   <!-- SERVICES INDEX -->
   <section class="section" aria-labelledby="services-title">
     <div class="container">
@@ -152,6 +159,30 @@ const homeFaqs = [
           ))
         }
       </ol>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section tinted" aria-labelledby="work-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div class="stack" style="--flow: var(--space-4)">
+          <p class="eyebrow">Our work</p>
+          <h2 class="h2" id="work-title">Repeat clients, location after location.</h2>
+        </div>
+        <div class="stack" style="--flow: var(--space-4)">
+          <p class="lede">
+            Swim schools, restaurants, franchise shops and public-agency offices from {projectCities.length} Michigan
+            communities.
+          </p>
+          <p>
+            <a href="/projects/" class="link-arrow">View all projects <Icon name="arrow" /></a>
+          </p>
+        </div>
+      </div>
+      <div class="work-grid">
+        {projects.map((p) => <ProjectCard project={p} />)}
+      </div>
     </div>
   </section>
 
@@ -192,36 +223,12 @@ const homeFaqs = [
     </div>
   </section>
 
-  <!-- PROJECTS (renders once real projects are added) -->
-  {
-    projects.length > 0 && (
-      <section class="section tinted" aria-labelledby="work-title">
-        <div class="container">
-          <div class="section-head section-head--split">
-            <div class="stack" style="--flow: var(--space-4)">
-              <p class="eyebrow">Our work</p>
-              <h2 class="h2" id="work-title">Recent projects</h2>
-            </div>
-            <p>
-              <a href="/projects/" class="link-arrow">
-                View all projects <Icon name="arrow" />
-              </a>
-            </p>
-          </div>
-          <div class="work-grid">
-            {projects.slice(0, 3).map((p) => <ProjectCard project={p} />)}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
   <!-- SECTORS -->
   <section class="section tinted" aria-labelledby="sectors-title">
     <div class="container sectors">
       <div class="stack" style="--flow: var(--space-4)">
         <p class="eyebrow">Spaces we build</p>
-        <h2 class="h2" id="sectors-title">Retail, office, medical, food service and recreational interiors.</h2>
+        <h2 class="h2" id="sectors-title">Retail, office, medical, food service, recreational and public-sector interiors.</h2>
         <p class="lede">
           Each type of space has its own pressure points — opening dates, patient flow, health inspections, tenants
           still working next door. We plan the build around them.
@@ -259,10 +266,11 @@ const homeFaqs = [
     <div class="container location__grid">
       <div class="stack" style="--flow: var(--space-4)">
         <p class="eyebrow">Where we are</p>
-        <h2 class="h2" id="location-title">Based in Wixom, building across southeast Michigan.</h2>
+        <h2 class="h2" id="location-title">Based in Wixom, building across Michigan.</h2>
         <p class="lede">
-          Our office on West Road in Wixom puts us in the middle of western Oakland County, minutes from I-96 and
-          M-5. Call to confirm we can take on a project at your site.
+          Our office on West Road in Wixom puts us in western Oakland County, minutes from I-96 and M-5 — and
+          our projects reach from Sterling Heights and Troy to Lansing and Flint. Call to confirm we can take on a
+          project at your site.
         </p>
       </div>
       <div class="location__card">
@@ -282,8 +290,8 @@ const homeFaqs = [
           </a>
         </div>
         <div>
-          <span class="mono location__label">Nearby communities</span>
-          <p class="location__near">{nearbyCommunities.join(' · ')}</p>
+          <span class="mono location__label">Where we’ve built</span>
+          <p class="location__near">{projectCities.map((c) => c.replace(', MI', '')).join(' · ')}</p>
         </div>
       </div>
     </div>
@@ -331,6 +339,12 @@ const homeFaqs = [
     max-width: 34rem;
     width: 100%;
     justify-self: center;
+  }
+  /* On phones the drawing is decoration that delays the real content. */
+  @media (max-width: 39.99rem) {
+    .hero__drawing {
+      display: none;
+    }
   }
   .spec {
     position: relative;
@@ -520,7 +534,13 @@ const homeFaqs = [
   }
   @media (min-width: 48rem) {
     .work-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 72rem) {
+    .work-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
     }
   }
 

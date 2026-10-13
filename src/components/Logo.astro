@@ -1,8 +1,15 @@
 ---
 /**
- * Typographic wordmark. No official logo file was available; replace this
- * component's markup with the supplied logo SVG when it is provided.
+ * Meridian's logo mark (grid panel + extruded "M", recovered from the legacy
+ * site and AI-upscaled) paired with an HTML wordmark that stays crisp at
+ * any size. Swap meridian-mark.png for a vector original when available.
  */
+import { getImage } from 'astro:assets';
+import mark from '../assets/brand/meridian-mark.png';
+
+// Plain <img> so the decorative empty alt survives (the link carries the name).
+const [x1, x2, x3] = await Promise.all([66, 132, 198].map((w) => getImage({ src: mark, width: w, format: 'webp' })));
+
 interface Props {
   tone?: 'ink' | 'paper';
 }
@@ -10,20 +17,23 @@ const { tone = 'ink' } = Astro.props;
 ---
 
 <span class:list={['logo', `logo--${tone}`]}>
-  <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-    <circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.5"></circle>
-    <path d="M20 1v38" stroke="var(--logo-accent)" stroke-width="2.5"></path>
-    <path d="M9 27V14l5.5 8 5.5-8 5.5 8 5.5-8v13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter"></path>
-  </svg>
+  <img
+    src={x1.src}
+    srcset={`${x1.src} 1x, ${x2.src} 2x, ${x3.src} 3x`}
+    alt=""
+    width="66"
+    height="38"
+    class="logo__mark"
+    decoding="async"
+  />
   <span class="logo__text">
-    <span class="logo__name">Meridian</span>
+    <span class="logo__name">Meridian</span>{" "}
     <span class="logo__sub">Construction Companies</span>
   </span>
 </span>
 
 <style>
   .logo {
-    --logo-accent: var(--accent);
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
@@ -31,13 +41,16 @@ const { tone = 'ink' } = Astro.props;
     line-height: 1;
   }
   .logo--paper {
-    --logo-accent: var(--accent-on-night);
     color: var(--on-night);
   }
   .logo__mark {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: auto;
+    height: 2.35rem;
     flex: none;
+    border-radius: 2px;
+  }
+  .logo--paper .logo__mark {
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25);
   }
   .logo__text {
     display: grid;
@@ -49,6 +62,10 @@ const { tone = 'ink' } = Astro.props;
     font-size: 1.3rem;
     letter-spacing: -0.02em;
     text-transform: uppercase;
+  }
+  .logo__name,
+  .logo__sub {
+    white-space: nowrap;
   }
   .logo__sub {
     font-family: var(--font-mono);
