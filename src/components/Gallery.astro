@@ -14,7 +14,7 @@ interface Props {
 }
 const { photos, label, group } = Astro.props;
 const items = await Promise.all(
-  photos.map(async (p) => ({ ...p, large: await getImage({ src: p.src, width: 1800, format: 'webp' }) })),
+  photos.map(async (p) => ({ ...p, large: await getImage({ src: p.src, width: 1600, format: 'webp' }) })),
 );
 ---
 
@@ -27,6 +27,7 @@ const items = await Promise.all(
             src={p.src}
             alt={p.alt}
             formats={['avif', 'webp']}
+        fallbackFormat="webp"
             widths={[400, 640, 960]}
             sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw"
             loading="lazy"

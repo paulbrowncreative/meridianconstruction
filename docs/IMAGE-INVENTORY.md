@@ -1,6 +1,6 @@
 # Legacy Image Inventory
 
-_Crawled from http://www.mymeridianconstruction.com/ on October 7, 2026. Upscaled 4× with Real-ESRGAN x4plus (BSD-3-Clause; Qualcomm AI Hub ONNX export), then capped at 2560 px on the long edge. Upscaled files live in `src/assets/legacy/`._
+_Crawled from http://www.mymeridianconstruction.com/ on October 7, 2026. Upscaled 4× with Real-ESRGAN x4plus (BSD-3-Clause; Qualcomm AI Hub ONNX export), then capped at 2560 px on the long edge. For the website the files in `src/assets/legacy/` were re-encoded at max 2000 px, JPEG quality 82 (the "Upscaled" column shows the 2560 px master size). The 2560 px masters are preserved in git history at commit `f3434e3`._
 
 **Before publishing any image:**
 - Confirm with Meridian that it shows **their** work.

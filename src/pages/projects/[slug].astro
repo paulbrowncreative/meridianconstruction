@@ -25,7 +25,7 @@ const og = await getImage({ src: p.cover.src, width: 1200, height: 630, fit: 'co
 const url = new URL(`/projects/${p.slug}/`, Astro.site).href;
 const imageObjects = await Promise.all(
   [p.cover, ...(p.pairs?.flatMap((x) => [x.before, x.after]) ?? []), ...p.gallery].map(async (ph) => {
-    const img = await getImage({ src: ph.src, width: 1600, format: 'jpg', quality: 80 });
+    const img = await getImage({ src: ph.src, width: 1200, format: 'webp' });
     return { '@type': 'ImageObject', contentUrl: new URL(img.src, Astro.site).href, caption: ph.alt };
   }),
 );
@@ -96,7 +96,8 @@ const imageObjects = await Promise.all(
         src={p.cover.src}
         alt={p.cover.alt}
         formats={['avif', 'webp']}
-        widths={[640, 960, 1280, 1800, 2400]}
+        fallbackFormat="webp"
+        widths={[640, 960, 1280, 1800]}
         sizes="(min-width: 76rem) 76rem, 100vw"
         loading="eager"
         fetchpriority="high"

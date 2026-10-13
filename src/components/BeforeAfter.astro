@@ -23,6 +23,7 @@ const { pairs } = Astro.props;
                 src={photo.src}
                 alt={photo.alt}
                 formats={['avif', 'webp']}
+        fallbackFormat="webp"
                 widths={[400, 640, 960]}
                 sizes="(min-width: 64rem) 36rem, 50vw"
                 loading="lazy"
